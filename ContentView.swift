@@ -14,6 +14,7 @@ struct ContentView: View {
         
         
         NavigationStack {
+            
             ZStack {
                 
                 LinearGradient(
@@ -33,15 +34,66 @@ struct ContentView: View {
                             .foregroundColor(.blue)
                             .cornerRadius(20)
                             .padding(5)
+                            .overlay (
+                                VStack {
+                                  
+                                    NavigationLink(destination: ContentView()) {
+                                        
+                                        Text("Home")
+                                        .font(.headline)
+                                        
+                                    }
+                                    
+                                    NavigationLink(destination: CreateDeck()) {
+                                        Text("Create a Deck!")
+                                            .font(.headline)
+                                    }
+                                }
+                            )
 
-        
-                    
-                    Rectangle()
-                        .frame(width: .infinity, height: .infinity - 100)
-                        .foregroundColor(.red)
-                        .cornerRadius(20)
-                        .padding(5)
-                    
+                    GeometryReader { geometry in
+                        
+                        Rectangle()
+                            .frame(width: .infinity, height: .infinity)
+                            .foregroundColor(.red)
+                            .cornerRadius(20)
+                            .padding(5)
+                            .overlay(
+                                
+                                VStack {
+                                    Spacer()
+                                    
+                                    Rectangle()
+                                        .foregroundColor(Color.orange)
+                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
+                                        .cornerRadius(20)
+                                        .padding(5)
+                                        .overlay (
+                                            Text("Welcome back, " + NSUserName())
+                                        )
+                                    
+                                    Rectangle()
+                                        .foregroundColor(Color.purple)
+                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
+                                        .cornerRadius(20)
+                                        .padding(5)
+                                   
+
+                                    Rectangle()
+                                        .foregroundColor(Color.green)
+                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.40)
+                                        .cornerRadius(20)
+                                        .padding(.bottom, 40)
+                                    
+//                                    Rectangle()
+//                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.1)
+//                                        .padding(5)
+//                                    
+                                }
+//                                ,alignment: .top
+                                    
+                            )
+                    }
                 }
             }
         }
