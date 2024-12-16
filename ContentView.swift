@@ -1,42 +1,47 @@
 import SwiftUI
 import SwiftData
 
+
+
 struct ContentView: View {
+    
+    @State var showingModal = false
+
+   
     var body: some View {
+        
+        
+        
+        
         NavigationStack {
             ZStack {
-                // Background gradient
+                
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),  // Honey (#F0D6A2)
-                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255) // Cream (#FFF8DC)
+                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
+                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
                     ]),
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .edgesIgnoringSafeArea(.all)
                 
-                VStack(spacing: 20) {
-                    Text("Welcome to Lingua")
-                        .font(.largeTitle)
-                        .foregroundColor(.black)
+                HStack(spacing: 10) {
+                        
+                        Rectangle()
+                            .frame(width: 150, height: .infinity)
+                            .foregroundColor(.blue)
+                            .cornerRadius(20)
+                            .padding(5)
+
+        
                     
                     Rectangle()
-                        .frame(width: 400, height: 200)
-                        .foregroundColor(.white)
+                        .frame(width: .infinity, height: .infinity - 100)
+                        .foregroundColor(.red)
                         .cornerRadius(20)
-                        .overlay(
-                            Text("Start your language journey!")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                        )
+                        .padding(5)
                     
-                    NavigationLink(destination: CreateDeck()) {
-                        Text("Create a Deck!")
-                            .font(.title2)
-                            .foregroundColor(.white)
-                            
-                    }
                 }
             }
         }
