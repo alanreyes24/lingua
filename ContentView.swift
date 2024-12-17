@@ -10,9 +10,6 @@ struct ContentView: View {
    
     var body: some View {
         
-        
-        
-        
         NavigationStack {
             
             ZStack {
@@ -61,38 +58,78 @@ struct ContentView: View {
                             .overlay(
                                 
                                 VStack {
+                                    
                                     Spacer()
                                     
                                     Rectangle()
                                         .foregroundColor(Color.orange)
-                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
+                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.10)
                                         .cornerRadius(20)
                                         .padding(5)
                                         .overlay (
-                                            Text("Welcome back, " + NSUserName())
+                                            Text("Welcome, " + NSUserName())
+                                                .font(.system(size: 36, weight: .bold))
+                                                .padding(.leading, 15),
+                                            alignment: .leading
+                                                
                                         )
+                                        
                                     
                                     Rectangle()
                                         .foregroundColor(Color.purple)
-                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
+                                        .frame(width: geometry.size.width * 0.97, height: geometry.size.height * 0.40)
                                         .cornerRadius(20)
                                         .padding(5)
-                                   
+                                        .overlay (
+                                            VStack {
+                                                Rectangle()
+                                                    .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.05)
+                                                    .foregroundColor(Color.blue)
+                                                    .cornerRadius(20)
+                                                    .padding(.top, 15)
+                                                    .overlay (
+                                                        Text("Your Flashcards")
+                                                            .font(.system(size: 24, weight: .bold))
+                                                            .padding(.leading, 15)
+                                                            .padding(.top, 10),
 
+                                                        alignment: .leading
+                                                     
+                                                        )
+                                                Spacer()
+                                            }
+                                        )
+                                        
                                     Rectangle()
                                         .foregroundColor(Color.green)
                                         .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.40)
                                         .cornerRadius(20)
                                         .padding(.bottom, 40)
-                                    
-//                                    Rectangle()
-//                                        .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.1)
-//                                        .padding(5)
-//                                    
-                                }
-//                                ,alignment: .top
-                                    
-                            )
+                                        .overlay (
+                                            HStack {
+                                                
+                                           
+                                                    Rectangle()
+                                                        .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.35)
+                                                        .foregroundColor(Color.black)
+                                                        .cornerRadius(20)
+                                                        .padding(.leading, 20)
+                                                        .padding(.bottom, 30)
+                                                    
+                                                    Spacer()
+                                                    
+                                                    Rectangle()
+                                                        .frame(width: geometry.size.width * 0.45, height: geometry.size.height * 0.35)
+                                                        .foregroundColor(Color.black)
+                                                        .cornerRadius(20)
+                                                        .padding(.trailing, 20)
+                                                        .padding(.bottom, 30)
+                                                    
+                                                
+                                    }
+                                )
+                            }
+                        )
                     }
                 }
             }
