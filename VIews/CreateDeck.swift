@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct CreateDeck: View {
+    
+    @Environment(\.modelContext) private var modelContext
+    @State private var deckName: String = ""
+    
     var body: some View {
         ZStack {
             LinearGradient(
@@ -20,16 +24,21 @@ struct CreateDeck: View {
             )
             .edgesIgnoringSafeArea(.all)
             
-            
             VStack {
-                Text("Create Deck")
-                    .frame(width: 200, height: 50)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.black)
-                    .background(Color.white)
-                    .cornerRadius(20)
+                
+                TextField("Enter deck name", text: $deckName)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                
+                Button("Create Deck") {
+                    
+                    let manager = DeckManager(modelContext: modelContext)
+                    manager.addDeck(name: deckName)
+                    print("Added Deck " + deckName)
+                }
+                
             }
+            
         }
     }
 }

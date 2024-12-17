@@ -13,6 +13,7 @@ struct LinguaApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            Deck.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -28,5 +29,6 @@ struct LinguaApp: App {
             ContentView()
         }
         .modelContainer(sharedModelContainer)
+        .modelContainer(for: Deck.self)
     }
 }

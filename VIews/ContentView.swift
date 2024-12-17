@@ -7,6 +7,8 @@ struct ContentView: View {
     
     @State var showingModal = false
 
+    @Query var decks: [Deck]
+    
    
     var body: some View {
         
@@ -59,6 +61,7 @@ struct ContentView: View {
                                 
                                 VStack {
                                     
+                                    
                                     Spacer()
                                     
                                     Rectangle()
@@ -96,7 +99,21 @@ struct ContentView: View {
                                                         alignment: .leading
                                                      
                                                         )
+                                                
+                                                HStack {
+                                                        if decks.isEmpty {
+                                                            Text("No decks found.")
+                                                        } else {
+                                                            ForEach(decks) { deck in
+                                                                Text("Deck: \(deck.name)")
+                                                                    .font(.system(size: 12, weight: .bold))
+                                                                    .foregroundColor(Color.black)
+                                                            }
+                                                        }
+                                                    }
                                                 Spacer()
+                                                
+                                                
                                             }
                                         )
                                         
