@@ -105,9 +105,12 @@ struct ContentView: View {
                                                             Text("No decks found.")
                                                         } else {
                                                             ForEach(decks) { deck in
-                                                                Text("Deck: \(deck.name)")
-                                                                    .font(.system(size: 12, weight: .bold))
-                                                                    .foregroundColor(Color.black)
+                                                                Rectangle()
+                                                                    .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.3)
+                                                                    .foregroundColor(Color.red)
+                                                                    .overlay (
+                                                                        Text(deck.name)
+                                                                    )
                                                             }
                                                         }
                                                     }
