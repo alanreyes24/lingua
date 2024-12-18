@@ -34,20 +34,12 @@ struct ContentView: View {
                             .cornerRadius(20)
                             .padding(5)
                             .overlay (
-                                VStack {
-                                  
-                                    NavigationLink(destination: ContentView()) {
-                                        
-                                        Text("Home")
-                                        .font(.headline)
-                                        
-                                    }
-                                    
-                                    NavigationLink(destination: CreateDeck()) {
-                                        Text("Create a Deck!")
-                                            .font(.headline)
-                                    }
-                                }
+                               Text("Lingua")
+                                .font(.system(size: 24, weight: .bold))
+                                .padding(.top, 15)
+                                ,
+                               alignment: .top
+                                
                             )
 
                     GeometryReader { geometry in
@@ -91,31 +83,70 @@ struct ContentView: View {
                                                     .cornerRadius(20)
                                                     .padding(.top, 15)
                                                     .overlay (
-                                                        Text("Your Flashcards")
-                                                            .font(.system(size: 24, weight: .bold))
-                                                            .padding(.leading, 15)
-                                                            .padding(.top, 10),
+                                                        
+                                                        alignment: .leading,
 
-                                                        alignment: .leading
+                                                        content: {
+                                                            
+                                                            HStack {
+                                                                
+                                                                
+                                                                Text("Your Flashcards")
+                                                                    .font(.system(size: 24, weight: .bold))
+                                                                    .padding(.leading, 15)
+                                                                    .padding(.top, 10)
+                                                                             
+                                                                Spacer()
+                                                                
+                                                                
+                                                                NavigationLink(destination: CreateDeck()) {
+                                                                    Text("Create a deck!")
+                                                                        .frame(width: geometry.size.width * 0.15, height: geometry.size.width * 0.05)
+                                                                        .foregroundColor(Color.black)
+                                                                        .background(Color.white)
+                                                                        .font(.system(size: 14, weight: .bold))
+                                                                        .cornerRadius(20)
+                                                                        .padding(.top, 10)
+                                                                }
+                                                                .buttonStyle(.plain) // Removes default NavigationLink styles, as well as for Buttons
+                                                                
+                                                                
+                                                                
+                                                            }
+                                                            
+                                                            
+                                                        }
+
+                                                       
                                                      
                                                         )
                                                 
-                                                HStack {
-                                                        if decks.isEmpty {
-                                                            Text("No decks found.")
-                                                        } else {
-                                                            ForEach(decks) { deck in
-                                                                Rectangle()
-                                                                    .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.3)
-                                                                    .foregroundColor(Color.red)
-                                                                    .overlay (
-                                                                        Text(deck.name)
-                                                                    )
+                                                ScrollView(.horizontal, showsIndicators: true) {
+                                                    
+                                                    HStack {
+                                                            if decks.isEmpty {
+                                                                Text("No decks found.")
+                                                            } else {
+                                                                ForEach(decks) { deck in
+                                                                    Rectangle()
+                                                                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.20)
+                                                                        .foregroundColor(Color.red)
+                                                                        .cornerRadius(20)
+                                                                        .padding(5)
+                                                                        .overlay (
+                                                                            Text(deck.name)
+                                                                                .font(.system(size: 10, weight: .bold))
+                                                                                .padding(.bottom, 10),
+                                                                            alignment: .bottom
+                                                                        )
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                Spacer()
+                                                }
                                                 
+                                                
+                                                Spacer()
+
                                                 
                                             }
                                         )
