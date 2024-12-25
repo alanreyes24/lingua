@@ -2,13 +2,13 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    @State var showingModal = false
+    
     @Query var decks: [Deck]
 
     var body: some View {
         NavigationStack {
+            
             ZStack {
-                // Background Gradient
                 LinearGradient(
                     gradient: Gradient(colors: [
                         Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),

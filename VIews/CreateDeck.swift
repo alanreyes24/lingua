@@ -2,7 +2,7 @@
 //  CreateDeck.swift
 //  Lingua
 //
-//  Created by Alan Reyes on 12/13/24.
+//  Created by Alan Reyes on 12/25/24.
 //
 
 import Foundation
@@ -11,29 +11,106 @@ import SwiftUI
 
 struct CreateDeck: View {
     
-
+    @Environment(\.modelContext) private var modelContext
+    
     @State public var currentDeck: Deck
+    @State private var deckName: String = ""
+    @State public var currentInputMode: String = ""
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
+                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 10) {
+                    TopBarView(geometry: geometry)
+                    ButtonView(geometry: geometry, currentInputMode: $currentInputMode) // Pass as @Binding
+                    InputView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: currentDeck, deckName: deckName)
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    CreateDeck(currentDeck: Deck(name: "Preview Deck"))
+}
+
+struct TopBarView: View {
+    let geometry: GeometryProxy
+    
+    var body: some View {
+        Rectangle()
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
+            .foregroundColor(Color.blue)
+            .cornerRadius(20)
+            .padding(5)
+            .overlay(
+                VStack {
+                    Text("Create your deck!")
+                        .font(.system(size: 36, weight: .bold))
+                    Text("Select a mode to input your material and get learning!")
+                        .font(.system(size: 24, weight: .bold))
+                }
+            )
+    }
+}
+
+struct ButtonView: View {
+    let geometry: GeometryProxy
+    @Binding var currentInputMode: String // Use @Binding for mutability
+    
+    var body: some View {
+        Rectangle()
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.30)
+            .foregroundColor(Color.purple)
+            .cornerRadius(20)
+            .padding(5)
+            .overlay(
+                HStack {
+                    Button("manual") {
+                        currentInputMode = "manual"
+                    }
+                    Button("text") {
+                        currentInputMode = "text"
+                    }
+                    Button("pdf") {
+                        currentInputMode = "pdf"
+                    }
+                }
+            )
+    }
+}
+
+struct InputView: View {
+    let geometry: GeometryProxy
+    let currentInputMode: String
+    let currentDeck: Deck
+    let deckName: String
+    
+    @Environment(\.modelContext) private var modelContext
     @State private var currentQuestion: String = ""
     @State private var currentAnswer: String = ""
     
     @ViewBuilder
     private func inputModeView(geometry: GeometryProxy) -> some View {
-        
-        if (currentInputMode == "text") {
-            
-            
-            
-            
-            
-        } else if (currentInputMode == "manual") {
-            
+        if currentInputMode == "text" {
+            // Text input mode content here
+        } else if currentInputMode == "manual" {
             HStack {
-                
                 Rectangle()
                     .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
                     .background(Color.white)
                     .cornerRadius(20)
-                    .overlay (
+                    .overlay(
                         TextField("Enter your question...", text: $currentQuestion)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .foregroundColor(Color.black)
@@ -44,16 +121,12 @@ struct CreateDeck: View {
                     .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
                     .background(Color.white)
                     .cornerRadius(20)
-
-                    
-                    .overlay (
+                    .overlay(
                         TextField("Enter your answer...", text: $currentAnswer)
                             .foregroundColor(Color.black)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding()
                     )
-
-               
                 
                 Button("Add card") {
                     let manager = CardManager(modelContext: modelContext)
@@ -61,108 +134,18 @@ struct CreateDeck: View {
                     currentQuestion = ""
                     currentAnswer = ""
                 }
-                
             }
-            
-        } else if (currentInputMode == "pdf") {
-            
+        } else if currentInputMode == "pdf" {
             Text("Hellooo222")
-
         }
-        
     }
     
-    @State var currentInputMode = "";
-    
-    @Environment(\.modelContext) private var modelContext
-    @State private var deckName: String = ""
-    
     var body: some View {
-        
-        ZStack {
-            
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
-                    Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .edgesIgnoringSafeArea(.all)
-            
-                
-                Rectangle()
-                    .frame(width: .infinity, height: .infinity)
-                    .foregroundColor(Color.blue)
-                    .overlay (
-                        
-                        GeometryReader { geometry in
-                            
-                            VStack {
-                                
-                                Rectangle()
-                                    .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.5)
-                                    .foregroundColor(Color.red)
-                                
-                                    .overlay (
-                                        
-                                        VStack {
-                                            
-                                            HStack {
-                                                Button("Text") {
-                                                    // makes deck input be based on text
-                                                    currentInputMode = "text"
-                                                }
-                                                Button("Manual") {
-                                                    // makes deck input be based on what user inputs directly
-                                                    currentInputMode = "manual"
-                                                }
-                                                Button("PDF") {
-                                                    // makes deck input be based on inputted PDF
-                                                    currentInputMode = "pdf"
-                                                }
-                                              
-                                            }
-                                            
-                                            Text("Mode: " + currentInputMode)
-
-                                            Rectangle()
-                                                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
-                                                .foregroundColor(Color.yellow)
-                                                .overlay (inputModeView(geometry: geometry))
-                                            
-                                            
-                                            
-                                            TextField("Enter deck name", text: $deckName)
-                                                .textFieldStyle(.roundedBorder)
-                                                .padding()
-                                            
-                                            Button("Create Deck") {
-                                                let manager = DeckManager(modelContext: modelContext)
-                                                currentDeck = manager.addDeck(name: deckName)
-                                            }
-                                            
-                                        }
-                                        
-                                        
-                                    )
-                                
-                                
-                            }
-                            
-                        }
-                        
-                    )
-                            
-                        
-               }
-            }
-                        
-        }
-    
-
-
-#Preview {
-    CreateDeck(currentDeck: Deck(name: "Preview Deck"))
+        Rectangle()
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.45)
+            .foregroundColor(Color.red)
+            .cornerRadius(20)
+            .padding(5)
+            .overlay(inputModeView(geometry: geometry))
+    }
 }
