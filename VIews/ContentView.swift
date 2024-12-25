@@ -166,6 +166,9 @@ struct ContentView: View {
                                                         .cornerRadius(20)
                                                         .padding(.leading, 20)
                                                         .padding(.bottom, 30)
+                                                        .overlay (
+                                                            Text("Your studying this week:")
+                                                        )
                                                     
                                                     Spacer()
                                                     
@@ -175,6 +178,9 @@ struct ContentView: View {
                                                         .cornerRadius(20)
                                                         .padding(.trailing, 20)
                                                         .padding(.bottom, 30)
+                                                        .overlay (
+                                                            Text("Imagine a nice calendar here for streaks")
+                                                        )
                                                     
                                                 
                                     }

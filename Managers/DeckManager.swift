@@ -20,4 +20,6 @@ class DeckManager {
         let newDeck = Deck(name: name)
         modelContext.insert(newDeck)
     }
+    
+    
 }
