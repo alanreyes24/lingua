@@ -16,9 +16,10 @@ class DeckManager {
         self.modelContext = modelContext
     }
     
-    func addDeck(name: String) {
+    func addDeck(name: String) -> Deck {
         let newDeck = Deck(name: name)
         modelContext.insert(newDeck)
+        return newDeck
     }
     
     

@@ -13,10 +13,12 @@ class Deck {
     
     var name: String
     var creationDate: Date
+    var cards: [Card]
     
     init (name: String, creationDate: Date = Date()) {
         self.name = name;
         self.creationDate = creationDate;
+        self.cards = []
         
     }
     

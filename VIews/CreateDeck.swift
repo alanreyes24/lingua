@@ -5,26 +5,64 @@
 //  Created by Alan Reyes on 12/13/24.
 //
 
+import Foundation
+import SwiftData
 import SwiftUI
 
 struct CreateDeck: View {
     
-    @State private var userInput: String = ""
+
+    @State public var currentDeck: Deck
+    @State private var currentQuestion: String = ""
+    @State private var currentAnswer: String = ""
     
     @ViewBuilder
-    private var inputModeView: some View {
+    private func inputModeView(geometry: GeometryProxy) -> some View {
         
         if (currentInputMode == "text") {
             
-            TextField("Enter your text here...", text: $userInput)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
             
-
+            
+            
+            
         } else if (currentInputMode == "manual") {
             
-            Text("Hellooo")
+            HStack {
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .overlay (
+                        TextField("Enter your question...", text: $currentQuestion)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .foregroundColor(Color.black)
+                            .padding()
+                    )
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                    .background(Color.white)
+                    .cornerRadius(20)
+
+                    
+                    .overlay (
+                        TextField("Enter your answer...", text: $currentAnswer)
+                            .foregroundColor(Color.black)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                    )
+
+               
+                
+                Button("Add card") {
+                    let manager = CardManager(modelContext: modelContext)
+                    manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
+                    currentQuestion = ""
+                    currentAnswer = ""
+                }
+                
+            }
             
         } else if (currentInputMode == "pdf") {
             
@@ -92,7 +130,7 @@ struct CreateDeck: View {
                                             Rectangle()
                                                 .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.20)
                                                 .foregroundColor(Color.yellow)
-                                                .overlay (inputModeView)
+                                                .overlay (inputModeView(geometry: geometry))
                                             
                                             
                                             
@@ -102,8 +140,7 @@ struct CreateDeck: View {
                                             
                                             Button("Create Deck") {
                                                 let manager = DeckManager(modelContext: modelContext)
-                                                manager.addDeck(name: deckName)
-                                                print("Added Deck " + deckName)
+                                                currentDeck = manager.addDeck(name: deckName)
                                             }
                                             
                                         }
@@ -127,5 +164,5 @@ struct CreateDeck: View {
 
 
 #Preview {
-    CreateDeck()
+    CreateDeck(currentDeck: Deck(name: "Preview Deck"))
 }
