@@ -159,6 +159,10 @@ struct DeckView: View {
                     Text(deck.name)
                         .font(.system(size: 10, weight: .bold))
                         .padding(.bottom, 10)
+                    
+                    NavigationLink(destination: StudyDeck(deck: deck)) {
+                        Text("Study")
+                    }
                 },
                 alignment: .bottom
             )
