@@ -13,6 +13,7 @@ import SwiftUI
 struct StudyDeck: View {
     
     let deck: Deck
+    @State var showAnswer: Bool = false
     
     var body: some View {
         
@@ -31,8 +32,8 @@ struct StudyDeck: View {
                 
                 VStack {
                     DeckInfoBar(geometry: geometry, deck: deck)
-                    CardStudy(geometry: geometry, deck: deck)
-                    ConfidenceSelection(geometry: geometry, deck: deck)
+                    CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer)
+                    ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer)
                 }
             }
         }
@@ -40,7 +41,7 @@ struct StudyDeck: View {
 }
 
 #Preview {
-    StudyDeck(deck: Deck(name: "Dummy name"))
+    StudyDeck(deck: Deck(name: "Preview Name"))
 }
 
 struct DeckInfoBar: View {
@@ -63,6 +64,7 @@ struct CardStudy: View {
     
     let geometry: GeometryProxy
     let deck: Deck
+    let showAnswer: Bool
                         
     var body: some View {
         
@@ -70,36 +72,100 @@ struct CardStudy: View {
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.50)
             .foregroundColor(Color.blue)
             .overlay (
-                ForEach(deck.cards) { card in
+                
+                HStack {
                     
-                    Rectangle()
-                        .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.15)
-                        .foregroundColor(Color.white)
-                        .cornerRadius(20)
-                        .overlay (
-                            HStack {
-                                Text(card.question)
-                                    .foregroundColor(Color.black)
-                                Text(card.answer)
-                                    .foregroundColor(Color.black)
-                            }
-                        )
+                    ForEach(deck.cards) { card in
+                      
+                                HStack {
+                                    
+                                    Rectangle()
+                                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                                        .foregroundColor(Color.white)
+                                        .cornerRadius(20)
+                                        .padding(5)
+                                        .overlay (
+                                            Text(card.question)
+                                                .foregroundColor(Color.black)
+                                        )
+                                        
+                                    if (showAnswer) {
+                                        
+                                        Rectangle()
+                                            .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                                            .foregroundColor(Color.white)
+                                            .cornerRadius(20)
+                                            .padding(5)
+                                            .overlay (
+                                                Text(card.answer)
+                                                    .foregroundColor(Color.black)
+                                            )
+                                        
+                                    }
+                                    
+                                    
+                                    
+                                }
+
+                        
+                    }
                 }
-                
-                
+               
             )
+        }
     }
-    
-}
 
 struct ConfidenceSelection: View {
     
     let geometry: GeometryProxy
     let deck: Deck
+    @Binding var showAnswer: Bool
     
     var body: some View {
+        
         Rectangle()
-            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.25)
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
             .foregroundColor(Color.pink)
+            .overlay (
+                
+                VStack {
+                    
+                    if (!showAnswer) {
+                        
+                        Button("Reveal Answer") {
+                            showAnswer = true
+                        }
+                        
+                    }
+                    
+                    
+                    if (showAnswer) {
+                        HStack {
+                            Button("Again") {
+                                showAnswer = false
+                            }
+                            
+                            Button("Hard") {
+                                showAnswer = false
+
+                            }
+                            
+                            Button("Good") {
+                                showAnswer = false
+
+                            }
+                            
+                            Button("Easy") {
+                                showAnswer = false
+                            }
+                        }
+                    }
+                    
+                  
+                    
+                }
+                
+            )
+            
     }
 }

@@ -109,7 +109,7 @@ struct FlashcardsView: View {
 
                         Spacer()
 
-                        NavigationLink(destination: CreateDeck(currentDeck: Deck(name: "Preview Deck"))) {
+                        NavigationLink(destination: CreateDeck()) {
                             Text("Create a deck!")
                                 .frame(width: geometry.size.width * 0.15, height: geometry.size.width * 0.05)
                                 .foregroundColor(.black)

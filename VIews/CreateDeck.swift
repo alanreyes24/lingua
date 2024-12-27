@@ -13,7 +13,7 @@ struct CreateDeck: View {
     
     @Environment(\.modelContext) private var modelContext
     
-    @State public var currentDeck: Deck
+    @State public var currentDeck: Deck = Deck(name: "")
     @State private var deckName: String = ""
     @State public var currentInputMode: String = ""
     
@@ -32,7 +32,7 @@ struct CreateDeck: View {
                 
                 VStack(spacing: 10) {
                     TopBarView(geometry: geometry)
-                    ButtonView(geometry: geometry, currentInputMode: $currentInputMode) // Pass as @Binding
+                    ButtonView(geometry: geometry, currentInputMode: $currentInputMode, currentDeck: $currentDeck) // Pass as @Binding
                     InputView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: currentDeck, deckName: deckName)
                 }
             }
@@ -45,6 +45,7 @@ struct CreateDeck: View {
 }
 
 struct TopBarView: View {
+    
     let geometry: GeometryProxy
     
     var body: some View {
@@ -66,7 +67,9 @@ struct TopBarView: View {
 
 struct ButtonView: View {
     let geometry: GeometryProxy
+    
     @Binding var currentInputMode: String // Use @Binding for mutability
+    @Binding var currentDeck: Deck
     
     var body: some View {
         Rectangle()
@@ -75,22 +78,33 @@ struct ButtonView: View {
             .cornerRadius(20)
             .padding(5)
             .overlay(
-                HStack {
-                    Button("manual") {
-                        currentInputMode = "manual"
+                
+                VStack {
+                    
+                    
+                    HStack {
+                        TextField("Name your deck...", text: $currentDeck.name)
                     }
-                    Button("text") {
-                        currentInputMode = "text"
+                    
+                    HStack {
+                        Button("manual") {
+                            currentInputMode = "manual"
+                        }
+                        Button("text") {
+                            currentInputMode = "text"
+                        }
+                        Button("pdf") {
+                            currentInputMode = "pdf"
+                        }
                     }
-                    Button("pdf") {
-                        currentInputMode = "pdf"
-                    }
+                    
                 }
             )
     }
 }
 
 struct InputView: View {
+    
     let geometry: GeometryProxy
     let currentInputMode: String
     let currentDeck: Deck
@@ -102,9 +116,13 @@ struct InputView: View {
     
     @ViewBuilder
     private func inputModeView(geometry: GeometryProxy) -> some View {
+        
         if currentInputMode == "text" {
-            // Text input mode content here
+            
+            Text("TEXT MODE")
+            
         } else if currentInputMode == "manual" {
+            
             HStack {
                 Rectangle()
                     .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
@@ -136,7 +154,7 @@ struct InputView: View {
                 }
             }
         } else if currentInputMode == "pdf" {
-            Text("Hellooo222")
+            Text("PDF MODE")
         }
     }
     
