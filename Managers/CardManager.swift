@@ -26,7 +26,7 @@ class CardManager: ObservableObject {
     
     func modifyEaseFactor(card: Card, score: Double) {
         
-        if (card.easeFactor > 1.2 && card.easeFactor < 3.1) {
+        if (card.easeFactor > 1.1 && card.easeFactor < 3.1) {
             
             card.easeFactor = card.easeFactor - 0.15 + (0.05 * score)
             

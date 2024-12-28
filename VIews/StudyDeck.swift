@@ -165,14 +165,18 @@ struct ConfidenceSelection: View {
                             Button("Again") {
                                 showAnswer = false
                                 cardManager.modifyEaseFactor(card: currentCard, score: 0)
-                                currentCard = deckManager.pickRandomCard(deck: deck)
+//                                currentCard = deckManager.pickRandomCard(deck: deck)
+                                currentCard = deckManager.pickLowestInterval(deck: deck)
+
 
                             }
                             
                             Button("Hard") {
                                 showAnswer = false
                                 cardManager.modifyEaseFactor(card: currentCard, score: 1.0)
-                                currentCard = deckManager.pickRandomCard(deck: deck)
+//                                currentCard = deckManager.pickRandomCard(deck: deck)
+                                currentCard = deckManager.pickLowestInterval(deck: deck)
+
 
 
                             }
@@ -180,7 +184,9 @@ struct ConfidenceSelection: View {
                             Button("Good") {
                                 showAnswer = false
                                 cardManager.modifyEaseFactor(card: currentCard, score: 2.0)
-                                currentCard = deckManager.pickRandomCard(deck: deck)
+//                                currentCard = deckManager.pickRandomCard(deck: deck)
+                                currentCard = deckManager.pickLowestInterval(deck: deck)
+
 
 
                             }
@@ -188,7 +194,9 @@ struct ConfidenceSelection: View {
                             Button("Easy") {
                                 showAnswer = false
                                 cardManager.modifyEaseFactor(card: currentCard, score: 3.0)
-                                currentCard = deckManager.pickRandomCard(deck: deck)
+//                                currentCard = deckManager.pickRandomCard(deck: deck)
+                                currentCard = deckManager.pickLowestInterval(deck: deck)
+
                                 
 
                             }

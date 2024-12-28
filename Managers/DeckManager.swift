@@ -28,16 +28,22 @@ class DeckManager: ObservableObject {
         
     }
     
-    func pickRandomCard(deck: Deck) -> Card {
+   
+    
+    func pickLowestInterval(deck: Deck) -> Card {
         
-        let errorCard = Card(question: "Error Question", answer: "Error Answer", deck: Deck(name: "Error Deck"))
-        if let randomCard = deck.cards.randomElement() {
-            return randomCard
+        let errorCard = Card(question: "Error question", answer: "Error answer", deck: Deck(name: "Error deck"))
+        
+        if deck.cards.isEmpty {
+            return errorCard
+        }
+        
+        if let lowestIntervalCard = deck.cards.min(by: {$0.interval < $1.interval}) {
+            return lowestIntervalCard
         }
         
         return errorCard
         
     }
 
-    
 }
