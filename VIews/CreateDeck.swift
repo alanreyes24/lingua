@@ -154,7 +154,28 @@ struct InputView: View {
                 }
             }
         } else if currentInputMode == "pdf" {
-            Text("PDF MODE")
+            
+            @Environment(\.modelContext) var modelContext
+            let gptManager = GPTManager(modelContext: modelContext)
+            
+            VStack {
+                
+                
+                Text("PDF MODE")
+                
+                Button("Send message to GPT") {
+                    
+                    gptManager.sendMessageToGPT(userInput: "apple banana cherry dog elephant fox giraffe horse igloo jelly kite lion mango nest orange penguin queen rabbit snake tiger umbrella violin whale xylophone yellow zebra adventure bright candle dance energy forest galaxy happy island journey kindness laugh mountain nature ocean peace quiet river sunset thunder universe valley wind zenith blossom calm daring excitement friendship grateful harmony imagination joyful knowledge love moonlight nostalgia optimism passion quirky radiant serenity tranquil understanding vibrant wonder yearning zealous brave clever delight empathy freedom glow hope inspire justice kind laughter magical noble open patience quietness resilient strong tender unique vision warm youthful zestful ambition balance") { response in
+                        if let response = response {
+                            print("GPT Response: \(response)")
+                        } else {
+                            print("Failed to get a response.")
+                        }
+                    }
+                    
+                }
+                
+            }
         }
     }
     

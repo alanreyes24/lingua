@@ -27,11 +27,13 @@ struct LinguaApp: App {
     // Create shared managers for Deck and Card
     @StateObject private var deckManager: DeckManager
     @StateObject private var cardManager: CardManager
+    @StateObject private var gptManager: GPTManager
 
     init() {
         let container = sharedModelContainer
         _deckManager = StateObject(wrappedValue: DeckManager(modelContext: container.mainContext))
         _cardManager = StateObject(wrappedValue: CardManager(modelContext: container.mainContext))
+        _gptManager = StateObject(wrappedValue: GPTManager(modelContext: container.mainContext))
     }
 
     var body: some Scene {
@@ -39,6 +41,7 @@ struct LinguaApp: App {
             ContentView()
                 .environmentObject(deckManager) // Inject DeckManager globally
                 .environmentObject(cardManager) // Inject CardManager globally
+                .environmentObject(gptManager) // Inject GPTManager globally
         }
         .modelContainer(sharedModelContainer)
     }
