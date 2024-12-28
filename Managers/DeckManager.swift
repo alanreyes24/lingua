@@ -22,6 +22,12 @@ class DeckManager: ObservableObject {
         return newDeck
     }
     
+    func deleteDeck(deck: Deck) {
+    
+        modelContext.delete(deck)
+        
+    }
+    
     func pickRandomCard(deck: Deck) -> Card {
         
         let errorCard = Card(question: "Error Question", answer: "Error Answer", deck: Deck(name: "Error Deck"))

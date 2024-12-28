@@ -140,8 +140,11 @@ struct FlashcardsView: View {
 }
 
 struct DeckView: View {
+    
     let deck: Deck
     let geometry: GeometryProxy
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var deckManager: DeckManager
 
     var body: some View {
         Rectangle()
@@ -162,6 +165,10 @@ struct DeckView: View {
                     
                     NavigationLink(destination: StudyDeck(deck: deck)) {
                         Text("Study")
+                    }
+                    
+                    Button("Delete") {
+                        deckManager.deleteDeck(deck: deck)
                     }
                 },
                 alignment: .bottom

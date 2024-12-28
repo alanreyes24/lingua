@@ -15,15 +15,13 @@ class Card {
     var answer: String
     var deck: Deck
 
-    var easeFactor: Double = 1.0
-    var interval: Double = 1.0
+    var easeFactor: Double = 2.5 // Default value used by Core Data during migration
+    var interval: Double = 1.0   // Default value used by Core Data during migration
     
-    init (question: String, answer: String, deck: Deck) {
-        self.question = question;
-        self.answer = answer;
+    init(question: String, answer: String, deck: Deck) {
+        self.question = question
+        self.answer = answer
         self.deck = deck
-        self.easeFactor = 1.0 // they say this should be 2.5 but idk experiment with it
-        self.interval = 1.0
+        // No need to redefine easeFactor and interval here unless overriding defaults
     }
-    
 }

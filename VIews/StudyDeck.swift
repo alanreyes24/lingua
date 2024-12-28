@@ -87,8 +87,20 @@ struct CardStudy: View {
                                         .cornerRadius(20)
                                         .padding(5)
                                         .overlay (
-                                            Text(currentCard.question)
-                                                .foregroundColor(Color.black)
+                                            
+                                            VStack{
+                                                
+                                                Text(currentCard.question)
+                                                    .foregroundColor(Color.black)
+                                                
+                                                Text("\(currentCard.easeFactor)")
+                                                    .foregroundColor(Color.black)
+                                                
+                                                Text("\(currentCard.interval)")
+                                                    .foregroundColor(Color.black)
+                                                
+                                            }
+                                            
                                         )
                                         
                                     if (showAnswer) {
@@ -126,7 +138,8 @@ struct ConfidenceSelection: View {
     @Binding var showAnswer: Bool
     @Binding var currentCard: Card
     @EnvironmentObject var deckManager: DeckManager
-    
+    @EnvironmentObject var cardManager: CardManager
+
 
     
     var body: some View {
@@ -151,14 +164,14 @@ struct ConfidenceSelection: View {
                         HStack {
                             Button("Again") {
                                 showAnswer = false
-//                                modifyEaseFactor(card: card, score: 0)
+                                cardManager.modifyEaseFactor(card: currentCard, score: 0)
                                 currentCard = deckManager.pickRandomCard(deck: deck)
 
                             }
                             
                             Button("Hard") {
                                 showAnswer = false
-//                                modifyEaseFactor(card: card, score: 1.0)
+                                cardManager.modifyEaseFactor(card: currentCard, score: 1.0)
                                 currentCard = deckManager.pickRandomCard(deck: deck)
 
 
@@ -166,7 +179,7 @@ struct ConfidenceSelection: View {
                             
                             Button("Good") {
                                 showAnswer = false
-//                                modifyEaseFactor(card: card, score: 2.0)
+                                cardManager.modifyEaseFactor(card: currentCard, score: 2.0)
                                 currentCard = deckManager.pickRandomCard(deck: deck)
 
 
@@ -174,7 +187,7 @@ struct ConfidenceSelection: View {
                             
                             Button("Easy") {
                                 showAnswer = false
-                                // modifyEaseFactor(card: card, score: 3.0)
+                                cardManager.modifyEaseFactor(card: currentCard, score: 3.0)
                                 currentCard = deckManager.pickRandomCard(deck: deck)
                                 
 
