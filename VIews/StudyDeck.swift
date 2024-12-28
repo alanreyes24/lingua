@@ -12,8 +12,12 @@ import SwiftUI
 
 struct StudyDeck: View {
     
-    let deck: Deck
+    @EnvironmentObject var deckManager: DeckManager
+    var deck: Deck
     @State var showAnswer: Bool = false
+    @State var currentCard: Card = Card(question: "Error Question", answer: "Error Answer", deck: Deck(name: "Error Deck"))
+    @Environment(\.modelContext) private var modelContext
+
     
     var body: some View {
         
@@ -32,16 +36,12 @@ struct StudyDeck: View {
                 
                 VStack {
                     DeckInfoBar(geometry: geometry, deck: deck)
-                    CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer)
-                    ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer)
+                    CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer, currentCard: currentCard)
+                    ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer, currentCard: $currentCard)
                 }
             }
         }
     }
-}
-
-#Preview {
-    StudyDeck(deck: Deck(name: "Preview Name"))
 }
 
 struct DeckInfoBar: View {
@@ -54,8 +54,12 @@ struct DeckInfoBar: View {
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
             .foregroundColor(Color.red)
             .overlay(
-                Text(deck.name)
-                    .font(.system(size: 36, weight: .bold))
+                HStack {
+                    Text(deck.name)
+                        .font(.system(size: 36, weight: .bold))
+                    Text("\(deck.cards.count)")
+                }
+                
             )
     }
 }
@@ -65,6 +69,7 @@ struct CardStudy: View {
     let geometry: GeometryProxy
     let deck: Deck
     let showAnswer: Bool
+    var currentCard: Card
                         
     var body: some View {
         
@@ -73,9 +78,6 @@ struct CardStudy: View {
             .foregroundColor(Color.blue)
             .overlay (
                 
-                HStack {
-                    
-                    ForEach(deck.cards) { card in
                       
                                 HStack {
                                     
@@ -85,7 +87,7 @@ struct CardStudy: View {
                                         .cornerRadius(20)
                                         .padding(5)
                                         .overlay (
-                                            Text(card.question)
+                                            Text(currentCard.question)
                                                 .foregroundColor(Color.black)
                                         )
                                         
@@ -97,7 +99,7 @@ struct CardStudy: View {
                                             .cornerRadius(20)
                                             .padding(5)
                                             .overlay (
-                                                Text(card.answer)
+                                                Text(currentCard.answer)
                                                     .foregroundColor(Color.black)
                                             )
                                         
@@ -108,8 +110,10 @@ struct CardStudy: View {
                                 }
 
                         
-                    }
-                }
+                    
+                
+                
+                
                
             )
         }
@@ -120,6 +124,10 @@ struct ConfidenceSelection: View {
     let geometry: GeometryProxy
     let deck: Deck
     @Binding var showAnswer: Bool
+    @Binding var currentCard: Card
+    @EnvironmentObject var deckManager: DeckManager
+    
+
     
     var body: some View {
         
@@ -143,20 +151,33 @@ struct ConfidenceSelection: View {
                         HStack {
                             Button("Again") {
                                 showAnswer = false
+//                                modifyEaseFactor(card: card, score: 0)
+                                currentCard = deckManager.pickRandomCard(deck: deck)
+
                             }
                             
                             Button("Hard") {
                                 showAnswer = false
+//                                modifyEaseFactor(card: card, score: 1.0)
+                                currentCard = deckManager.pickRandomCard(deck: deck)
+
 
                             }
                             
                             Button("Good") {
                                 showAnswer = false
+//                                modifyEaseFactor(card: card, score: 2.0)
+                                currentCard = deckManager.pickRandomCard(deck: deck)
+
 
                             }
                             
                             Button("Easy") {
                                 showAnswer = false
+                                // modifyEaseFactor(card: card, score: 3.0)
+                                currentCard = deckManager.pickRandomCard(deck: deck)
+                                
+
                             }
                         }
                     }
@@ -169,3 +190,4 @@ struct ConfidenceSelection: View {
             
     }
 }
+

@@ -15,11 +15,18 @@ class Deck {
     var creationDate: Date
     var cards: [Card]
     
+    
+    // stuff I need to add
+    
+    // deck color
+    // what folder belongs to (maybe)
+    
+    
     init (name: String, creationDate: Date = Date()) {
         self.name = name;
         self.creationDate = creationDate;
         self.cards = []
-        
+
     }
     
     

@@ -12,7 +12,6 @@ import SwiftData
 struct LinguaApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
             Deck.self,
             Card.self
         ])
@@ -25,9 +24,21 @@ struct LinguaApp: App {
         }
     }()
 
+    // Create shared managers for Deck and Card
+    @StateObject private var deckManager: DeckManager
+    @StateObject private var cardManager: CardManager
+
+    init() {
+        let container = sharedModelContainer
+        _deckManager = StateObject(wrappedValue: DeckManager(modelContext: container.mainContext))
+        _cardManager = StateObject(wrappedValue: CardManager(modelContext: container.mainContext))
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(deckManager) // Inject DeckManager globally
+                .environmentObject(cardManager) // Inject CardManager globally
         }
         .modelContainer(sharedModelContainer)
     }

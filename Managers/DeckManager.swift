@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-class DeckManager {
+class DeckManager: ObservableObject {
     
     let modelContext: ModelContext
     
@@ -22,5 +22,16 @@ class DeckManager {
         return newDeck
     }
     
+    func pickRandomCard(deck: Deck) -> Card {
+        
+        let errorCard = Card(question: "Error Question", answer: "Error Answer", deck: Deck(name: "Error Deck"))
+        if let randomCard = deck.cards.randomElement() {
+            return randomCard
+        }
+        
+        return errorCard
+        
+    }
+
     
 }

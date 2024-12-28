@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-class CardManager {
+class CardManager: ObservableObject {
     
     let modelContext: ModelContext
     
@@ -22,7 +22,12 @@ class CardManager {
         deck.cards.append(newCard)
         modelContext.insert(newCard)
         
+    }
     
+    func modifyEaseFactor(card: Card, score: Double) {
+        
+        card.easeFactor = card.easeFactor - 0.15 + (0.05 * score)
+        
     }
     
 }
