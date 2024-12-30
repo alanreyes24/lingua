@@ -68,7 +68,7 @@ struct MainContentView: View {
                     }
                 )
         }
-    } 
+    }
 }
 
 struct WelcomeView: View {
@@ -109,7 +109,7 @@ struct FlashcardsView: View {
 
                         Spacer()
 
-                        NavigationLink(destination: CreateDeck()) {
+                        NavigationLink(destination: CreateDeck().navigationBarBackButtonHidden(true)) {
                             Text("Create a deck!")
                                 .frame(width: geometry.size.width * 0.15, height: geometry.size.width * 0.05)
                                 .foregroundColor(.black)
@@ -163,7 +163,7 @@ struct DeckView: View {
                         .font(.system(size: 10, weight: .bold))
                         .padding(.bottom, 10)
                     
-                    NavigationLink(destination: StudyDeck(deck: deck)) {
+                    NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
                         Text("Study")
                     }
                     

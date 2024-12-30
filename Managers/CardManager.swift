@@ -27,7 +27,6 @@ class CardManager: ObservableObject {
         }
         if let dictionary = try? JSONDecoder().decode([String: String].self, from: data) {
             for (key, value) in dictionary {
-                // Use `self.addCard` instead of creating a new CardManager
                 self.addCard(question: key, answer: value, toDeck: deck)
             }
         }

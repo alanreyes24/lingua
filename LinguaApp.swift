@@ -38,11 +38,16 @@ struct LinguaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            
+                ContentView()
                 .environmentObject(deckManager) // Inject DeckManager globally
                 .environmentObject(cardManager) // Inject CardManager globally
                 .environmentObject(gptManager) // Inject GPTManager globally
+            
+ 
         }
+        .windowStyle(.hiddenTitleBar)
         .modelContainer(sharedModelContainer)
+        
     }
 }
