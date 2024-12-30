@@ -33,7 +33,7 @@ class GPTManager: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let messages: [[String: String]] = [
-            ["role": "system", "content": "You are taking in the words and providing their translation in key pair value format, or if the translation is there, tying them together."],
+            ["role": "system", "content": "You are taking in the words and their translation in another location. You are going to put the words in key value format in a json. If the person was very obviously wrong in their translation, correct it to the correct one."],
             ["role": "user", "content": userInput]
         ]
 

@@ -40,10 +40,6 @@ struct CreateDeck: View {
     }
 }
 
-#Preview {
-    CreateDeck(currentDeck: Deck(name: "Preview Deck"))
-}
-
 struct TopBarView: View {
     
     let geometry: GeometryProxy
@@ -93,8 +89,8 @@ struct ButtonView: View {
                         Button("text") {
                             currentInputMode = "text"
                         }
-                        Button("pdf") {
-                            currentInputMode = "pdf"
+                        Button("gpt") {
+                            currentInputMode = "gpt"
                         }
                     }
                     
@@ -113,6 +109,9 @@ struct InputView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var currentQuestion: String = ""
     @State private var currentAnswer: String = ""
+    
+    @State private var gptInput: String = ""
+    @State private var gptOutput: String? = nil
     
     @ViewBuilder
     private func inputModeView(geometry: GeometryProxy) -> some View {
@@ -153,7 +152,7 @@ struct InputView: View {
                     currentAnswer = ""
                 }
             }
-        } else if currentInputMode == "pdf" {
+        } else if currentInputMode == "gpt" {
             
             @Environment(\.modelContext) var modelContext
             let gptManager = GPTManager(modelContext: modelContext)
@@ -161,18 +160,24 @@ struct InputView: View {
             VStack {
                 
                 
-                Text("PDF MODE")
+                Text("GPT MODE")
+                
+                TextField("Enter the information you want to be turned into flashcards here...", text: $gptInput)
                 
                 Button("Send message to GPT") {
                     
-                    gptManager.sendMessageToGPT(userInput: "apple banana cherry dog elephant fox giraffe horse igloo jelly kite lion mango nest orange penguin queen rabbit snake tiger umbrella violin whale xylophone yellow zebra adventure bright candle dance energy forest galaxy happy island journey kindness laugh mountain nature ocean peace quiet river sunset thunder universe valley wind zenith blossom calm daring excitement friendship grateful harmony imagination joyful knowledge love moonlight nostalgia optimism passion quirky radiant serenity tranquil understanding vibrant wonder yearning zealous brave clever delight empathy freedom glow hope inspire justice kind laughter magical noble open patience quietness resilient strong tender unique vision warm youthful zestful ambition balance") { response in
+                    gptManager.sendMessageToGPT(userInput: gptInput) { response in
                         if let response = response {
-                            print("GPT Response: \(response)")
+                            gptOutput = response
                         } else {
                             print("Failed to get a response.")
                         }
                     }
-                    
+                }
+                
+                if let response = gptOutput {
+                    Text(response)
+                        .font(.headline)
                 }
                 
             }
