@@ -5,12 +5,15 @@ import SwiftUI
 struct CreateDeck: View {
     
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.presentationMode) private var presentationMode
     
     @State var currentDeck: Deck = Deck(name: "New Deck")
     @State private var deckName: String = ""
     @State private var currentInputMode: String = ""
     
+    
     var body: some View {
+        NavigationStack {
         GeometryReader { geometry in
             ZStack {
                 LinearGradient(
@@ -31,6 +34,21 @@ struct CreateDeck: View {
             }
         }
     }
+        
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }){
+                    HStack {
+                         Image(systemName: "chevron.backward")
+                         Text("Back")
+                    }
+                }
+            }
+        }
+        
+}
 }
 
 struct TopBarView: View {
