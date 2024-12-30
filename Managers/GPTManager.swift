@@ -33,12 +33,12 @@ class GPTManager: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let messages: [[String: String]] = [
-            ["role": "system", "content": "You are taking in the words and their translation in another location. You are going to put the words in key value format in a json. If the person was very obviously wrong in their translation, correct it to the correct one."],
+            ["role": "system", "content": "You are taking in the words and their translation in another location. You are going to put the words in key value format in a json. If the person was very obviously wrong in their translation, correct it to the correct one. If there are multiple translations pick the 2 most commonly used ones and put both seperated by a slash. Make sure you always put the language that is not English FIRST, as in the key in the key value format."],
             ["role": "user", "content": userInput]
         ]
 
         let requestBody: [String: Any] = [
-            "model": "gpt-4-turbo",
+            "model": "gpt-3.5-turbo",
             "messages": messages
         ]
 

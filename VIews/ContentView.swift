@@ -68,7 +68,7 @@ struct MainContentView: View {
                     }
                 )
         }
-    }
+    } 
 }
 
 struct WelcomeView: View {

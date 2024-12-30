@@ -1,10 +1,3 @@
-//
-//  CreateDeck.swift
-//  Lingua
-//
-//  Created by Alan Reyes on 12/25/24.
-//
-
 import Foundation
 import SwiftData
 import SwiftUI
@@ -13,9 +6,9 @@ struct CreateDeck: View {
     
     @Environment(\.modelContext) private var modelContext
     
-    @State public var currentDeck: Deck = Deck(name: "")
+    @State var currentDeck: Deck = Deck(name: "New Deck")
     @State private var deckName: String = ""
-    @State public var currentInputMode: String = ""
+    @State private var currentInputMode: String = ""
     
     var body: some View {
         GeometryReader { geometry in
@@ -154,7 +147,6 @@ struct InputView: View {
             }
         } else if currentInputMode == "gpt" {
             
-            @Environment(\.modelContext) var modelContext
             let gptManager = GPTManager(modelContext: modelContext)
             
             VStack {
@@ -163,21 +155,26 @@ struct InputView: View {
                 Text("GPT MODE")
                 
                 TextField("Enter the information you want to be turned into flashcards here...", text: $gptInput)
+                    .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.20)
                 
                 Button("Send message to GPT") {
                     
                     gptManager.sendMessageToGPT(userInput: gptInput) { response in
                         if let response = response {
                             gptOutput = response
+                            
+                            if let jsonCards = gptOutput {
+                                
+                                let cardManager = CardManager(modelContext: modelContext)
+                                cardManager.buildCards(gptResponse: jsonCards, toDeck: currentDeck)
+                                
+                                
+                            }
+                            
                         } else {
                             print("Failed to get a response.")
                         }
                     }
-                }
-                
-                if let response = gptOutput {
-                    Text(response)
-                        .font(.headline)
                 }
                 
             }
