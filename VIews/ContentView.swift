@@ -21,32 +21,10 @@ struct ContentView: View {
 
                 // Main Layout
                 HStack(spacing: 10) {
-                    SidebarView() // Moved sidebar to its own subview
                     MainContentView(decks: decks) // Moved main content to its own subview
                 }
             }
         }
-    }
-}
-
-#Preview {
-    ContentView()
-        .modelContainer(for: Deck.self, inMemory: true)
-}
-
-struct SidebarView: View {
-    var body: some View {
-        Rectangle()
-            .frame(width: 150, height: .infinity)
-            .foregroundColor(.blue)
-            .cornerRadius(20)
-            .padding(5)
-            .overlay(
-                Text("Lingua")
-                    .font(.system(size: 24, weight: .bold))
-                    .padding(.top, 15),
-                alignment: .top
-            )
     }
 }
 
