@@ -21,7 +21,7 @@ struct ContentView: View {
 
                 // Main Layout
                 HStack(spacing: 10) {
-                    MainContentView(decks: decks) // Moved main content to its own subview
+                    MainContentView(decks: decks)
                 }
             }
         }

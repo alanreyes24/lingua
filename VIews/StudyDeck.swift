@@ -12,15 +12,15 @@ import SwiftUI
 
 struct StudyDeck: View {
     
-    @EnvironmentObject var deckManager: DeckManager
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.presentationMode) private var presentationMode
     
-    var deck: Deck
+    @EnvironmentObject var deckManager: DeckManager
+
+    @State var deck: Deck
     @State var showAnswer: Bool = false
-    @State var currentCard: Card = Card(question: "Error Question", answer: "Error Answer", deck: Deck(name: "Error Deck"))
-    @Environment(\.modelContext) private var modelContext
-    
-    
+    @State var currentCard: Card = Card(question: "Error", answer: "question", deck: Deck(name: "Error Deck"))
+
     var body: some View {
         
         NavigationStack {
@@ -41,6 +41,9 @@ struct StudyDeck: View {
                     VStack {
                         DeckInfoBar(geometry: geometry, deck: deck)
                         CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer, currentCard: currentCard)
+                            .onAppear {
+                                currentCard = deckManager.pickLowestInterval(deck: deck)
+                            }
                         ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer, currentCard: $currentCard)
                     }
                 }
@@ -59,6 +62,7 @@ struct StudyDeck: View {
             }
         }
     }
+    
     
     
     
@@ -121,6 +125,7 @@ struct StudyDeck: View {
                                 
                             )
                         
+                        
                         if (showAnswer) {
                             
                             Rectangle()
@@ -147,6 +152,7 @@ struct StudyDeck: View {
                     
                 )
         }
+        
     }
     
     struct ConfidenceSelection: View {

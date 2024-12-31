@@ -27,6 +27,8 @@ class CardManager: ObservableObject {
         }
         if let dictionary = try? JSONDecoder().decode([String: String].self, from: data) {
             for (key, value) in dictionary {
+                print(key)
+                print(value)
                 self.addCard(question: key, answer: value, toDeck: deck)
             }
         }
