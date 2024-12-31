@@ -13,7 +13,7 @@ class Card {
     
     var question: String
     var answer: String
-    var deck: Deck
+    @Relationship var deck: Deck
 
     var easeFactor: Double = 2.5 // Default value used by Core Data during migration
     var interval: Double = 1.0   // Default value used by Core Data during migration

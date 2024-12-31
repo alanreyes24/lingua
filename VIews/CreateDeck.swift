@@ -75,7 +75,7 @@ struct TopBarView: View {
 struct ButtonView: View {
     let geometry: GeometryProxy
     
-    @Binding var currentInputMode: String // Use @Binding for mutability
+    @Binding var currentInputMode: String
     @Binding var currentDeck: Deck
     
     var body: some View {
