@@ -8,8 +8,11 @@ struct CreateDeck: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @State var currentDeck: Deck = Deck(name: "New Deck")
-    @State private var deckName: String = ""
     @State private var currentInputMode: String = ""
+    
+    @State var currentStep: String = "design"
+    
+    
     
     
     var body: some View {
@@ -27,9 +30,8 @@ struct CreateDeck: View {
                 .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 10) {
-                    TopBarView(geometry: geometry)
-                    ButtonView(geometry: geometry, currentInputMode: $currentInputMode, currentDeck: $currentDeck) // Pass as @Binding
-                    InputView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: currentDeck, deckName: deckName)
+                    TopBarView(geometry: geometry, currentStep: currentStep)
+                    MiddleView(geometry: geometry, currentInputMode: $currentInputMode, currentStep: $currentStep, currentDeck: $currentDeck)
                 }
             }
         }
@@ -54,6 +56,7 @@ struct CreateDeck: View {
 struct TopBarView: View {
     
     let geometry: GeometryProxy
+    let currentStep: String
     
     var body: some View {
         Rectangle()
@@ -63,24 +66,52 @@ struct TopBarView: View {
             .padding(5)
             .overlay(
                 VStack {
-                    Text("Create your deck!")
-                        .font(.system(size: 36, weight: .bold))
-                    Text("Select a mode to input your material and get learning!")
-                        .font(.system(size: 24, weight: .bold))
+                    
+                    switch currentStep {
+                        
+                    case "design":
+                        
+                        Text("Create your deck!")
+                            .font(.system(size: 36, weight: .bold))
+                        Text("Design the look of your deck")
+                            .font(.system(size: 24, weight: .bold))
+                        
+                        
+                        
+                    case "fill":
+                        
+                        Text("Enter the information you want in the deck!")
+                            .font(.system(size: 36, weight: .bold))
+                        Text("Select a mode to input your material and get learning!")
+                            .font(.system(size: 24, weight: .bold))
+                        
+                    default:
+                        
+                        Text("Error step")
+                            .font(.system(size: 36, weight: .bold))
+                        
+                    }
+                    
+                    
+                   
                 }
             )
     }
 }
 
-struct ButtonView: View {
+struct MiddleView: View {
+    
     let geometry: GeometryProxy
     
     @Binding var currentInputMode: String
+    @Binding var currentStep: String
     @Binding var currentDeck: Deck
+    @State var deckColor: Color = Color.red
     
     var body: some View {
+        
         Rectangle()
-            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.30)
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
             .foregroundColor(Color.purple)
             .cornerRadius(20)
             .padding(5)
@@ -88,34 +119,175 @@ struct ButtonView: View {
                 
                 VStack {
                     
-                    
-                    HStack {
-                        TextField("Name your deck...", text: $currentDeck.name)
+                    if (currentStep == "design") {
+                                                
+                        DesignView(geometry: geometry, currentDeck: currentDeck, currentStep: $currentStep, deckColor: $deckColor)
+                        
+                        
                     }
                     
-                    HStack {
-                        Button("manual") {
-                            currentInputMode = "manual"
-                        }
-                        Button("text") {
-                            currentInputMode = "text"
-                        }
-                        Button("gpt") {
-                            currentInputMode = "gpt"
-                        }
+                    
+                    if (currentStep == "fill") {
+                        FillView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: currentDeck)
                     }
+                    
                     
                 }
             )
     }
 }
 
-struct InputView: View {
+struct DesignView: View {
     
     let geometry: GeometryProxy
-    let currentInputMode: String
+    @State var currentDeck: Deck
+    @Binding var currentStep: String
+    @Binding var deckColor: Color
+    
+    var body: some View {
+        
+        HStack {
+            
+            Rectangle()
+                .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.40)
+                .foregroundColor(.white)
+                .cornerRadius(20)
+                .padding(5)
+                .overlay(
+                    VStack {
+                        
+                        Rectangle()
+                            .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.35)
+                            .foregroundColor(deckColor)
+                            .cornerRadius(20)
+                            .overlay (
+                                
+                                Text(currentDeck.name)
+                                    .font(.system(size: 24, weight: .bold))
+                                    .foregroundColor(.white)
+                                
+                            )
+                             
+                        
+
+                    },
+                    alignment: .top
+                )
+            
+            VStack {
+                
+                Text("Name:")
+                    .font(.system(size: 30, weight: .bold))
+
+                
+                TextField("", text: $currentDeck.name)
+                    .frame(width: geometry.size.width * 0.40)
+                
+                Text("Color:")
+                    .font(.system(size: 30, weight: .bold))
+                
+                PickColor(geometry: geometry, deckColor: $deckColor)
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.10, height: geometry.size.height * 0.05)
+                    .foregroundColor(.blue)
+                    .overlay (
+                        Text("Create Deck")
+                    )
+                
+                    .onTapGesture {
+                        currentStep = "fill"
+                    }
+                
+            }
+            
+            
+            
+            
+
+        }
+        
+        
+    }
+    
+}
+
+struct PickColor: View {
+    
+    let geometry: GeometryProxy
+    
+    @Binding var deckColor: Color
+    
+    var body: some View {
+        
+        Rectangle()
+            .frame(width: geometry.size.width * 0.4, height: geometry.size.width * 0.15)
+            .cornerRadius(20)
+            .overlay (
+                
+                HStack {
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.red)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.red
+                        }
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.orange)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.orange
+                        }
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.yellow)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.yellow
+                        }
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.green)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.green
+                        }
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.blue)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.blue
+                        }
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.04, height: geometry.size.height * 0.06)
+                        .foregroundColor(.purple)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            deckColor = Color.purple
+                        }
+                
+                }
+                
+            )
+        
+    }
+    
+}
+
+struct FillView: View {
+    
+    let geometry: GeometryProxy
+    @State var currentInputMode: String
     let currentDeck: Deck
-    let deckName: String
     
     @State var gptButtonPressed: Bool = false
     @State var gptRequestFinished: Bool = false
@@ -225,10 +397,31 @@ struct InputView: View {
     
     var body: some View {
         Rectangle()
-            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.45)
+            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.3)
             .foregroundColor(Color.red)
             .cornerRadius(20)
             .padding(5)
-            .overlay(inputModeView(geometry: geometry))
+            .overlay(
+                VStack {
+                    
+                    HStack {
+                                            Button("manual") {
+                                                currentInputMode = "manual"
+                                            }
+                                            Button("text") {
+                                                currentInputMode = "text"
+                                            }
+                                            Button("gpt") {
+                                                currentInputMode = "gpt"
+                                            }
+                                        }
+                    
+                    inputModeView(geometry: geometry)
+
+                }
+            )
     }
 }
+
+
+
