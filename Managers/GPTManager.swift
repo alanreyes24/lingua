@@ -33,7 +33,7 @@ class GPTManager: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let messages: [[String: String]] = [
-            ["role": "system", "content": "You are processing word translations from one language into another. Your task is to output the translations in a JSON format, structured as key-value pairs. The key should always be the non-English word, and the value should be the English translation(s). If the translation provided is clearly incorrect, replace it with the correct one. If there are multiple valid translations, include the two most commonly used ones, separated by a slash (e.g., ‘word1/word2’). Ensure the output follows these rules strictly, with non-English words always appearing as the keys."],
+            ["role": "system", "content": "You are processing word translations from one language into another. Your task is to output the translations in a JSON format, structured as key-value pairs. The key should always be the non-English word, and the value should be the English translation(s). If the translation provided is clearly incorrect, replace it with the correct one. If there are multiple valid translations, include the two most commonly used ones, separated by a slash (e.g., ‘word1/word2’). Ensure the output follows these rules strictly, with English words always appearing as the key."],
             ["role": "user", "content": userInput]
         ]
 

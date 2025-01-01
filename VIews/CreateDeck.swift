@@ -117,6 +117,9 @@ struct InputView: View {
     let currentDeck: Deck
     let deckName: String
     
+    @State var gptButtonPressed: Bool = false
+    @State var gptRequestFinished: Bool = false
+    
     @Environment(\.modelContext) private var modelContext
     @State private var currentQuestion: String = ""
     @State private var currentAnswer: String = ""
@@ -177,10 +180,18 @@ struct InputView: View {
                 
                 Button("Send message to GPT") {
                     
+                    
+                    gptButtonPressed = true
+                    
                     gptManager.sendMessageToGPT(userInput: gptInput) { response in
+                        
+                        
                         if let response = response {
                             gptOutput = response
                             
+                            gptButtonPressed = false
+                            gptRequestFinished = true
+
                             if let jsonCards = gptOutput {
                                 
                                 let cardManager = CardManager(modelContext: modelContext)
@@ -194,6 +205,19 @@ struct InputView: View {
                         }
                     }
                 }
+                
+                if (gptButtonPressed) {
+                    
+                    Text("Your cards are currently being created...")
+                    
+                }
+                
+                if (gptRequestFinished) {
+                    
+                    Text("Your cards have finished being created!")
+
+                }
+                
                 
             }
         }
