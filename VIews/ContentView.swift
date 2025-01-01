@@ -19,7 +19,6 @@ struct ContentView: View {
                 )
                 .edgesIgnoringSafeArea(.all)
 
-                // Main Layout
                 HStack(spacing: 10) {
                     MainContentView(decks: decks)
                 }
@@ -133,21 +132,25 @@ struct DeckView: View {
             .overlay(
                 VStack {
                     
-                    ForEach(deck.cards) { card in
-                            Text(card.question)
-                        }
-                    
                     Text(deck.name)
-                        .font(.system(size: 10, weight: .bold))
-                        .padding(.bottom, 10)
+                        .font(.system(size: 16, weight: .bold))
+                        .padding(.top, 20)
                     
-                    NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
-                        Text("Study")
-                    }
                     
-                    Button("Delete") {
-                        deckManager.deleteDeck(deck: deck)
+                    Spacer()
+                    
+                    HStack {
+                        NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
+                            Text("Study")
+                        }
+                        
+                        Button("Delete") {
+                            deckManager.deleteDeck(deck: deck)
+                        }
                     }
+                    .padding(.bottom, 10)
+                    
+                    
                 },
                 alignment: .bottom
             )
