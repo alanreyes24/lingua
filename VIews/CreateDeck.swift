@@ -251,6 +251,7 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.red
+                            currentDeck.color = "red"
 
                         }
                     
@@ -260,6 +261,8 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.orange
+                            currentDeck.color = "orange"
+
                         }
                     
                     Rectangle()
@@ -268,6 +271,8 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.yellow
+                            currentDeck.color = "yellow"
+
                         }
                     
                     Rectangle()
@@ -276,6 +281,8 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.green
+                            currentDeck.color = "green"
+
                         }
                     
                     Rectangle()
@@ -284,6 +291,8 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.blue
+                            currentDeck.color = "blue"
+
                         }
                     
                     Rectangle()
@@ -292,6 +301,8 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.purple
+                            currentDeck.color = "purple"
+
                         }
                 
                 }

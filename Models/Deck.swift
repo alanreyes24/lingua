@@ -16,6 +16,7 @@ class Deck {
     var name: String
     var creationDate: Date
     var cards: [Card]
+    var color: String
     
     
     // stuff I need to add
@@ -27,6 +28,7 @@ class Deck {
         self.name = name;
         self.creationDate = creationDate;
         self.cards = []
+        self.color = "red"
 
     }
     

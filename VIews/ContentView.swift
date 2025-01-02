@@ -8,16 +8,16 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             
-            ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
-                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .edgesIgnoringSafeArea(.all)
+//            ZStack {
+//                LinearGradient(
+//                    gradient: Gradient(colors: [
+//                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
+//                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
+//                    ]),
+//                    startPoint: .top,
+//                    endPoint: .bottom
+//                )
+//                .edgesIgnoringSafeArea(.all)
 
                 HStack(spacing: 10) {
                     MainContentView(decks: decks)
@@ -25,7 +25,7 @@ struct ContentView: View {
             }
         }
     }
-}
+//}
 
 struct MainContentView: View {
     let decks: [Deck]
@@ -104,7 +104,7 @@ struct FlashcardsView: View {
                                 Text("No decks found.")
                             } else {
                                 ForEach(decks) { deck in
-                                    DeckView(deck: deck, geometry: geometry)
+                                    DeckView(deck: deck, geometry: geometry, deckColor: mapColor(from: deck.color))
                                 }
                             }
                         }
@@ -114,40 +114,112 @@ struct FlashcardsView: View {
                 }
             )
     }
+
+    // Helper function to map color names to Color values
+    func mapColor(from colorName: String) -> Color {
+        switch colorName.lowercased() {
+            case "red":
+                return .red
+            case "orange":
+                return .orange
+            case "yellow":
+                return .yellow
+            case "green":
+                return .green
+            case "blue":
+                return .blue
+            case "purple":
+                return .purple
+            default:
+                return .red // Default color
+        }
+    }
 }
 
 struct DeckView: View {
     
     let deck: Deck
     let geometry: GeometryProxy
+    let deckColor: Color
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var deckManager: DeckManager
 
     var body: some View {
         Rectangle()
             .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.20)
-            .foregroundColor(.red)
+            .foregroundColor(Color.white)
             .cornerRadius(20)
-            .padding(5)
+            .padding(1)
             .overlay(
+                        
                 VStack {
-                    
-                    Text(deck.name)
-                        .font(.system(size: 10, weight: .bold))
-                        .padding(.top, 10)
-                    
-                    
+        
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                        .foregroundColor(deckColor)
+                        .cornerRadius(20)
+                        .overlay (
+                            
+                            Text(deck.name)
+                                .font(.system(size: 16, weight: .bold))
+                                .padding(.top, 10)
+
+                            
+                        )
+                
                     Spacer()
                     
                     HStack {
-                        NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
-                            Text("Study")
-                        }
                         
-                        Button("Delete") {
-                            deckManager.deleteDeck(deck: deck)
+                        NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
+                            ZStack {
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.05, height: geometry.size.height * 0.02)
+                                    .foregroundColor(.white)
+                                    .padding(1)
+                                    .cornerRadius(20)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(deckColor, lineWidth: 1)
+                                    )
+                                
+                                Text("Study")
+                                    .foregroundColor(deckColor)
+                                    .font(.system(size: 12, weight: .bold))
+                            }
                         }
-                    }
+                        .buttonStyle(PlainButtonStyle()) // Removes default NavigationLink styling
+                                                
+                        Rectangle()
+                            .frame(width: geometry.size.width * 0.05, height: geometry.size.height * 0.02)
+                            .foregroundColor(Color.white)
+                            .cornerRadius(20)
+                            .padding(1)
+                            .overlay (
+                                
+                                ZStack {
+                                    
+                                    RoundedRectangle(cornerRadius: 20) // Rounded rectangle outline
+                                                .stroke(deckColor, lineWidth: 1)
+                                    
+                                    Text("Delete")
+                                        .foregroundColor(deckColor)
+                                        .font(.system(size: 12, weight: .bold))
+                                    
+                                    
+                                }
+                                
+                                
+                                
+                            )
+                            .onTapGesture {
+                                
+                                deckManager.deleteDeck(deck: deck)
+
+                                
+                            }
+
+                    } .padding(.bottom, 10)
                     
                     
                 },
