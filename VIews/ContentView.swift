@@ -133,8 +133,8 @@ struct DeckView: View {
                 VStack {
                     
                     Text(deck.name)
-                        .font(.system(size: 16, weight: .bold))
-                        .padding(.top, 20)
+                        .font(.system(size: 10, weight: .bold))
+                        .padding(.top, 10)
                     
                     
                     Spacer()
@@ -148,7 +148,6 @@ struct DeckView: View {
                             deckManager.deleteDeck(deck: deck)
                         }
                     }
-                    .padding(.bottom, 10)
                     
                     
                 },

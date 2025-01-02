@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftData
+import SwiftUI
+
 
 @Model
 class Deck {
@@ -18,7 +20,6 @@ class Deck {
     
     // stuff I need to add
     
-    // deck color
     // what folder belongs to (maybe)
     
     

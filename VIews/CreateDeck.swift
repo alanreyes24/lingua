@@ -80,11 +80,14 @@ struct TopBarView: View {
                         
                     case "fill":
                         
-                        Text("Enter the information you want in the deck!")
+                        Text("Select a mode to input your material!")
                             .font(.system(size: 36, weight: .bold))
-                        Text("Select a mode to input your material and get learning!")
-                            .font(.system(size: 24, weight: .bold))
                         
+                    case "created":
+                        
+                        Text("Your deck has been created!")
+                            .font(.system(size: 36, weight: .bold))
+
                     default:
                         
                         Text("Error step")
@@ -112,35 +115,48 @@ struct MiddleView: View {
         
         Rectangle()
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
-            .foregroundColor(Color.purple)
+            .foregroundColor(Color.clear)
             .cornerRadius(20)
             .padding(5)
             .overlay(
                 
                 VStack {
                     
-                    if (currentStep == "design") {
-                                                
-                        DesignView(geometry: geometry, currentDeck: currentDeck, currentStep: $currentStep, deckColor: $deckColor)
+                    switch currentStep {
                         
+                    case "design":
                         
-                    }
-                    
-                    
-                    if (currentStep == "fill") {
-                        FillView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: currentDeck)
+                        DesignView(geometry: geometry, currentDeck: $currentDeck, currentStep: $currentStep, deckColor: $deckColor)
+                        
+                    case "fill":
+                        
+                        FillView(geometry: geometry, currentInputMode: currentInputMode, currentDeck: $currentDeck, currentStep: $currentStep)
+                        
+                    case "created":
+                        
+                        CreatedView(geometry: geometry, currentDeck: currentDeck, deckColor: deckColor)
+                        
+                    default:
+                        
+                        VStack {
+                            Text("Error")
+                        }
+                        
                     }
                     
                     
                 }
+                
             )
+        
+        
     }
-}
+    }
 
 struct DesignView: View {
     
     let geometry: GeometryProxy
-    @State var currentDeck: Deck
+    @Binding var currentDeck: Deck
     @Binding var currentStep: String
     @Binding var deckColor: Color
     
@@ -186,7 +202,8 @@ struct DesignView: View {
                 Text("Color:")
                     .font(.system(size: 30, weight: .bold))
                 
-                PickColor(geometry: geometry, deckColor: $deckColor)
+                PickColor(geometry: geometry, currentDeck: $currentDeck, deckColor: $deckColor)
+                
                 
                 Rectangle()
                     .frame(width: geometry.size.width * 0.10, height: geometry.size.height * 0.05)
@@ -215,7 +232,8 @@ struct DesignView: View {
 struct PickColor: View {
     
     let geometry: GeometryProxy
-    
+    @Binding var currentDeck: Deck
+
     @Binding var deckColor: Color
     
     var body: some View {
@@ -233,6 +251,7 @@ struct PickColor: View {
                         .cornerRadius(20)
                         .onTapGesture {
                             deckColor = Color.red
+
                         }
                     
                     Rectangle()
@@ -287,7 +306,8 @@ struct FillView: View {
     
     let geometry: GeometryProxy
     @State var currentInputMode: String
-    let currentDeck: Deck
+    @Binding var currentDeck: Deck
+    @Binding var currentStep: String
     
     @State var gptButtonPressed: Bool = false
     @State var gptRequestFinished: Bool = false
@@ -344,14 +364,19 @@ struct FillView: View {
             
             VStack {
                 
-                
-                Text("GPT MODE")
-                
-                TextField("Enter the information you want to be turned into flashcards here...", text: $gptInput)
-                    .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.20)
-                
-                Button("Send message to GPT") {
                     
+                ZStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.white) // Rounded background
+                    TextEditor(text: $gptInput)
+                        .padding(12) // Add padding to prevent text from touching edges
+                        .scrollContentBackground(.hidden) // Hide default background
+                        .foregroundColor(Color.black)
+                }
+                .frame(width: geometry.size.width * 0.60, height: geometry.size.height * 0.30)
+            
+                
+                Button("Convert text into cards") {
                     
                     gptButtonPressed = true
                     
@@ -363,6 +388,7 @@ struct FillView: View {
                             
                             gptButtonPressed = false
                             gptRequestFinished = true
+                            currentStep = "created"
 
                             if let jsonCards = gptOutput {
                                 
@@ -387,6 +413,7 @@ struct FillView: View {
                 if (gptRequestFinished) {
                     
                     Text("Your cards have finished being created!")
+                    
 
                 }
                 
@@ -397,7 +424,7 @@ struct FillView: View {
     
     var body: some View {
         Rectangle()
-            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.3)
+            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
             .foregroundColor(Color.red)
             .cornerRadius(20)
             .padding(5)
@@ -405,16 +432,47 @@ struct FillView: View {
                 VStack {
                     
                     HStack {
-                                            Button("manual") {
-                                                currentInputMode = "manual"
-                                            }
-                                            Button("text") {
-                                                currentInputMode = "text"
-                                            }
-                                            Button("gpt") {
-                                                currentInputMode = "gpt"
-                                            }
-                                        }
+                        
+                        Rectangle()
+                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                            .foregroundColor(Color.white)
+                            .cornerRadius(20)
+                            .overlay (
+                                Text("AI")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color.black)
+                            )
+                            .onTapGesture {
+                                currentInputMode = "gpt"
+                            }
+                        
+                        Rectangle()
+                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                            .foregroundColor(Color.white)
+                            .cornerRadius(20)
+                            .overlay (
+                                Text("Manual")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color.black)
+                            )
+                            .onTapGesture {
+                                currentInputMode = "manual"
+                            }
+                        
+                        Rectangle()
+                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                            .foregroundColor(Color.white)
+                            .cornerRadius(20)
+                            .overlay (
+                                Text("PDF")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(Color.black)
+                            )
+                            .onTapGesture {
+                                currentInputMode = "pdf"
+                            }
+                        
+                    }
                     
                     inputModeView(geometry: geometry)
 
@@ -423,5 +481,75 @@ struct FillView: View {
     }
 }
 
+struct CreatedView: View {
+    
+    let geometry: GeometryProxy
+    let currentDeck: Deck
+    let deckColor: Color
+    
+    var body: some View {
+        
+        VStack {
+            
+            Text("Study your deck now!")
+                .font(.system(size: 24, weight: .bold))
+            
+            HStack {
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.40)
+                    .foregroundColor(.white)
+                    .cornerRadius(20)
+                    .padding(5)
+                    .overlay(
+                        VStack {
+                            
+                            Rectangle()
+                                .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.35)
+                                .foregroundColor(deckColor)
+                                .cornerRadius(20)
+                                .overlay (
+                                    
+                                    Text(currentDeck.name)
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(.white)
+                                    
+                                )
+                            
+                            
+                            
+                        },
+                        alignment: .top
+                    )
+                
+                
+            }
+            
+            HStack {
+                
+                
+                ForEach(currentDeck.cards) { card in
+                    
+                    
+                    Text("\(card.question)")
+                    Text("\(card.answer)")
 
+                    
+                }
+            }
+           
+            
+            Text("...Or go back home!")
+                .font(.system(size: 24, weight: .bold))
+
+            NavigationLink(destination: ContentView()) {
+                Text("Home")
+            }
+            
+            
+        }
+        
+    }
+    
+}
 
