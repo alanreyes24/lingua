@@ -59,7 +59,7 @@ struct StudyDeck: View {
         var body: some View {
             Rectangle()
                 .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.15)
-                .foregroundColor(Color.red)
+                .foregroundColor(Color.clear)
                 .overlay(
                     HStack {
                         Text(deck.name)
@@ -82,7 +82,7 @@ struct StudyDeck: View {
             
             Rectangle()
                 .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.60)
-                .foregroundColor(Color.blue)
+                .foregroundColor(Color.clear)
                 .overlay (
                     
                     
@@ -159,7 +159,7 @@ struct StudyDeck: View {
             
             Rectangle()
                 .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.25)
-                .foregroundColor(Color.pink)
+                .foregroundColor(Color.clear)
                 .overlay (
                     
                     VStack {
@@ -167,7 +167,7 @@ struct StudyDeck: View {
                         if (!showAnswer) {
                             
                             Rectangle()
-                                .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.10)
                                 .foregroundColor(Color.white)
                                 .cornerRadius(20)
                                 .onTapGesture {
