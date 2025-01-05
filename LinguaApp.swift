@@ -13,7 +13,9 @@ struct LinguaApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Deck.self,
-            Card.self
+            Card.self,
+            Day.self
+
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -28,21 +30,24 @@ struct LinguaApp: App {
     @StateObject private var deckManager: DeckManager
     @StateObject private var cardManager: CardManager
     @StateObject private var gptManager: GPTManager
+    @StateObject private var calendarManager: CalendarManager
 
     init() {
         let container = sharedModelContainer
         _deckManager = StateObject(wrappedValue: DeckManager(modelContext: container.mainContext))
         _cardManager = StateObject(wrappedValue: CardManager(modelContext: container.mainContext))
         _gptManager = StateObject(wrappedValue: GPTManager(modelContext: container.mainContext))
+        _calendarManager = StateObject(wrappedValue: CalendarManager(modelContext: container.mainContext))
     }
 
     var body: some Scene {
         WindowGroup {
             
                 ContentView()
-                .environmentObject(deckManager) // Inject DeckManager globally
-                .environmentObject(cardManager) // Inject CardManager globally
-                .environmentObject(gptManager) // Inject GPTManager globally
+                .environmentObject(deckManager)
+                .environmentObject(cardManager)
+                .environmentObject(gptManager)
+                .environmentObject(calendarManager)
             
  
         }

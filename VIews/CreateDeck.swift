@@ -36,7 +36,8 @@ struct CreateDeck: View {
 //            }
         }
     }
-        
+        .frame(minWidth: 1000, minHeight: 800)
+
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button(action: {
@@ -50,7 +51,8 @@ struct CreateDeck: View {
             }
         }
         
-}
+}                   
+
 }
 
 struct TopBarView: View {

@@ -3,13 +3,30 @@ import SwiftData
 import Foundation
 
 struct ContentView: View {
+    // 1) SwiftData context to insert or save changes
+    @Environment(\.modelContext) private var context
     
+    // 2) Query existing Day objects from SwiftData (sorted by `day` ascending)
+    @Query(sort: \Day.day, order: .forward) private var days: [Day]
+    // 3) Query for Deck objects (assuming Deck is also a SwiftData model)
     @Query var decks: [Deck]
+    
+    @EnvironmentObject var calendarManager: CalendarManager
 
     var body: some View {
         NavigationStack {
             HStack(spacing: 10) {
-                MainContentView(decks: decks)
+                // Pass 'days' into MainContentView so it can display them
+                MainContentView(decks: decks, days: days)
+                    .frame(minWidth: 1000, minHeight: 800)
+            }
+        }
+        .task {
+            // 4) Ensure we have Day objects for this month in SwiftData
+            do {
+                try calendarManager.ensureMonthDataExists(for: Date())
+            } catch {
+                print("Error ensuring month data: \(error.localizedDescription)")
             }
         }
     }
@@ -17,9 +34,8 @@ struct ContentView: View {
 
 struct MainContentView: View {
     let decks: [Deck]
+    let days: [Day]  // We'll use the SwiftData Days directly
     
-    @State private var monthArray: [Day] = []
-
     var body: some View {
         GeometryReader { geometry in
             Rectangle()
@@ -30,18 +46,13 @@ struct MainContentView: View {
                     VStack {
                         Spacer()
                         
+                        // Same subviews as before
                         WelcomeView(geometry: geometry)
                         
                         FlashcardsView(geometry: geometry, decks: decks)
                         
-                        StudyCalendarView(geometry: geometry, monthArray: $monthArray)
-                            .onAppear {
-                                do {
-                                    monthArray = try retrieveCurrentMonthDetails()
-                                } catch {
-                                    print("Error: \(error.localizedDescription)")
-                                }
-                            }
+                        // Instead of an @State [Day], pass the SwiftData days
+                        StudyCalendarView(geometry: geometry, days: days)
                     }
                 )
         }
@@ -83,12 +94,13 @@ struct FlashcardsView: View {
                             .font(.system(size: 24, weight: .bold))
                             .padding(.leading, 15)
                             .padding(.top, 10)
-
+                        
                         Spacer()
-
+                        
                         NavigationLink(destination: CreateDeck().navigationBarBackButtonHidden(true)) {
                             Text("Create a deck!")
-                                .frame(width: geometry.size.width * 0.15, height: geometry.size.width * 0.05)
+                                .frame(width: geometry.size.width * 0.15,
+                                       height: geometry.size.width * 0.05)
                                 .foregroundColor(.black)
                                 .background(Color.white)
                                 .font(.system(size: 14, weight: .bold))
@@ -97,7 +109,7 @@ struct FlashcardsView: View {
                         }
                         .buttonStyle(.plain)
                     }
-
+                    
                     ScrollView(.horizontal, showsIndicators: true) {
                         HStack {
                             if decks.isEmpty {
@@ -113,13 +125,13 @@ struct FlashcardsView: View {
                             }
                         }
                     }
-
+                    
                     Spacer()
                 }
             )
     }
     
-    // Helper function to map color names to Color values
+    // Helper function to map a stored color string to SwiftUI Color
     func mapColor(from colorName: String) -> Color {
         switch colorName.lowercased() {
         case "red":    return .red
@@ -128,7 +140,7 @@ struct FlashcardsView: View {
         case "green":  return .green
         case "blue":   return .blue
         case "purple": return .purple
-        default:       return .red // Default color
+        default:       return .red
         }
     }
 }
@@ -150,7 +162,7 @@ struct DeckView: View {
             .overlay(
                 VStack {
                     Rectangle()
-                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.13)
+                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
                         .foregroundColor(deckColor)
                         .cornerRadius(20)
                         .overlay(
@@ -162,21 +174,23 @@ struct DeckView: View {
                     Spacer()
                     
                     HStack {
-                        NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
-                            ZStack {
-                                Rectangle()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(deckColor)
-                                    .cornerRadius(20)
-                                    .overlay(
-                                        Image(systemName: "book.fill")
-                                    )
-                            }
+                        NavigationLink(destination: StudyDeck(deck: deck)
+                            .navigationBarBackButtonHidden(true)) {
+                                ZStack {
+                                    Rectangle()
+                                        .frame(width: 30, height: 30)
+                                        .foregroundColor(deckColor)
+                                        .cornerRadius(20)
+                                        .overlay(
+                                            Image(systemName: "book.fill")
+                                        )
+                                }
                         }
                         .buttonStyle(PlainButtonStyle())
 
                         Rectangle()
-                            .frame(width: geometry.size.width * 0.05, height: geometry.size.height * 0.02)
+                            .frame(width: geometry.size.width * 0.05,
+                                   height: geometry.size.height * 0.02)
                             .foregroundColor(.white)
                             .cornerRadius(20)
                             .padding(1)
@@ -204,15 +218,18 @@ struct DeckView: View {
 
 struct StudyCalendarView: View {
     let geometry: GeometryProxy
-    @Binding var monthArray: [Day]
     
-    // Define the grid layout with 7 columns for the days of the week
+    // We now use the Days from SwiftData, not a @Binding array
+    let days: [Day]
+    
+    // Define a 7-column grid
     let columns = Array(repeating: GridItem(.flexible()), count: 7)
     
     var body: some View {
         Rectangle()
             .foregroundColor(.clear)
-            .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.40)
+            .frame(width: geometry.size.width * 0.95,
+                   height: geometry.size.height * 0.40)
             .cornerRadius(20)
             .padding(.bottom, 40)
             .overlay(
@@ -238,7 +255,7 @@ struct StudyCalendarView: View {
                     
                     Spacer()
                     
-                    // Right side: Calendar Days
+                    // Right side: Display each Day
                     Rectangle()
                         .frame(width: geometry.size.width * 0.45,
                                height: geometry.size.height * 0.35)
@@ -252,13 +269,15 @@ struct StudyCalendarView: View {
                                     .stroke(Color.white, lineWidth: 3)
                                 
                                 LazyVGrid(columns: columns, spacing: 10) {
-                                    ForEach(monthArray) { day in
+                                    // Display each Day object
+                                    ForEach(days) { day in
                                         VStack {
+                                            // Only show real days, skip placeholders if needed
                                             if day.day > 0 {
                                                 Text("\(day.day)")
                                                     .font(.headline)
                                                     .foregroundColor(.black)
-                                                    .frame(width: 30, height: 40)
+                                                    .frame(width: 50, height: 50)
                                                     .background(Color.white)
                                                     .cornerRadius(8)
                                                     .shadow(radius: 2)
@@ -272,86 +291,4 @@ struct StudyCalendarView: View {
                 }
             )
     }
-}
-
-func retrieveCurrentMonthDetails() throws -> [Day] {
-    var monthArray: [Day] = []
-    let calendar = Calendar.current
-    let currentDate = Date()
-    
-    let components = calendar.dateComponents([.year, .month], from: currentDate)
-    guard let month = components.month, let year = components.year else {
-        throw NSError(
-            domain: "RetrieveMonthDetailsError",
-            code: 1,
-            userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve year or month from current date."]
-        )
-    }
-    
-    let monthYearFormatter = DateFormatter()
-    monthYearFormatter.locale = Locale.current
-    monthYearFormatter.dateFormat = "LLLL yyyy"
-    
-    let monthYearString = monthYearFormatter.string(from: currentDate)
-    print("\(monthYearString):\n")
-    
-    let weekdayFormatter = DateFormatter()
-    weekdayFormatter.locale = Locale.current
-    weekdayFormatter.dateFormat = "EEEE"
-    
-    guard let range = calendar.range(of: .day, in: .month, for: currentDate) else {
-        throw NSError(
-            domain: "RetrieveMonthDetailsError",
-            code: 2,
-            userInfo: [NSLocalizedDescriptionKey: "Unable to determine number of days in the current month."]
-        )
-    }
-    
-    for day in range {
-        var dateComponents = DateComponents()
-        dateComponents.year = year
-        dateComponents.month = month
-        dateComponents.day = day
-        
-        if let date = calendar.date(from: dateComponents) {
-            let weekdayName = weekdayFormatter.string(from: date)
-            let tempDate = Day(
-                year: year,
-                month: month,
-                day: day,
-                dayOfWeek: weekdayName
-            )
-            monthArray.append(tempDate)
-        } else {
-            print("Invalid date for day \(day).")
-        }
-    }
-    
-    // Insert placeholder days at the start of the array to correctly align the calendar
-    switch monthArray[1].dayOfWeek {
-    case "Tuesday":
-        monthArray.insert(Day(year: 0, month: 0, day: 0, dayOfWeek: "placeholder"), at: 0)
-        
-    case "Wednesday":
-        for _ in 0...1 {
-            monthArray.insert(Day(year: 0, month: 0, day: 0, dayOfWeek: "placeholder"), at: 0)
-        }
-        
-    case "Thursday":
-        for _ in 0...2 {
-            monthArray.insert(Day(year: 0, month: 0, day: 0, dayOfWeek: "placeholder"), at: 0)
-        }
-        
-    case "Friday":
-        for _ in 0...3 {
-            monthArray.insert(Day(year: 0, month: 0, day: 0, dayOfWeek: "placeholder"), at: 0)
-        }
-        
-    default:
-        for _ in 0...1 {
-            monthArray.insert(Day(year: 0, month: 0, day: 0, dayOfWeek: "placeholder"), at: 0)
-        }
-    }
-    
-    return monthArray
 }
