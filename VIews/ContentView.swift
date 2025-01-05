@@ -33,7 +33,7 @@ struct MainContentView: View {
     var body: some View {
         GeometryReader { geometry in
             Rectangle()
-                .foregroundColor(.red)
+                .foregroundColor(Color.clear)
                 .cornerRadius(20)
                 .padding(5)
                 .overlay(
@@ -53,7 +53,7 @@ struct WelcomeView: View {
 
     var body: some View {
         Rectangle()
-            .foregroundColor(.orange)
+            .foregroundColor(.clear)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.10)
             .cornerRadius(20)
             .padding(5)
@@ -72,7 +72,7 @@ struct FlashcardsView: View {
 
     var body: some View {
         Rectangle()
-            .foregroundColor(.purple)
+            .foregroundColor(.clear)
             .frame(width: geometry.size.width * 0.97, height: geometry.size.height * 0.40)
             .cornerRadius(20)
             .padding(5)
@@ -155,7 +155,7 @@ struct DeckView: View {
                 VStack {
         
                     Rectangle()
-                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                        .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.13)
                         .foregroundColor(deckColor)
                         .cornerRadius(20)
                         .overlay (
@@ -173,19 +173,25 @@ struct DeckView: View {
                         
                         NavigationLink(destination: StudyDeck(deck: deck).navigationBarBackButtonHidden(true)) {
                             ZStack {
+                                
+//                                Rectangle()
+//                                    .frame(width: geometry.size.width * 0.05, height: geometry.size.height * 0.02)
+//                                    .foregroundColor(.white)
+//                                    .padding(1)
+//                                    .cornerRadius(20)
+//                                    .overlay(
+//                                        RoundedRectangle(cornerRadius: 20)
+//                                            .stroke(deckColor, lineWidth: 1)
+//                                    )
+                                
                                 Rectangle()
-                                    .frame(width: geometry.size.width * 0.05, height: geometry.size.height * 0.02)
-                                    .foregroundColor(.white)
-                                    .padding(1)
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(deckColor)
                                     .cornerRadius(20)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(deckColor, lineWidth: 1)
+                                    .overlay (
+                                        Image(systemName: "book.fill")
                                     )
                                 
-                                Text("Study")
-                                    .foregroundColor(deckColor)
-                                    .font(.system(size: 12, weight: .bold))
                             }
                         }
                         .buttonStyle(PlainButtonStyle()) // Removes default NavigationLink styling
@@ -199,12 +205,14 @@ struct DeckView: View {
                                 
                                 ZStack {
                                     
-                                    RoundedRectangle(cornerRadius: 20) // Rounded rectangle outline
-                                                .stroke(deckColor, lineWidth: 1)
                                     
-                                    Text("Delete")
+                                    Rectangle()
+                                        .frame(width: 30, height: 30)
                                         .foregroundColor(deckColor)
-                                        .font(.system(size: 12, weight: .bold))
+                                        .cornerRadius(20)
+                                        .overlay (
+                                            Image(systemName: "trash.fill")
+                                        )
                                     
                                     
                                 }
@@ -233,7 +241,7 @@ struct StudyCalendarView: View {
 
     var body: some View {
         Rectangle()
-            .foregroundColor(.green)
+            .foregroundColor(.clear)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.40)
             .cornerRadius(20)
             .padding(.bottom, 40)
@@ -241,26 +249,48 @@ struct StudyCalendarView: View {
                 HStack {
                     Rectangle()
                         .frame(width: geometry.size.width * 0.40, height: geometry.size.height * 0.35)
-                        .foregroundColor(.black)
+                        .foregroundColor(.clear)
                         .cornerRadius(20)
                         .padding(.leading, 20)
                         .padding(.bottom, 30)
                         .overlay(
-                            Text("Your studying this week:")
-                                .foregroundColor(.white)
+                            
+                            ZStack {
+                                
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.white, lineWidth: 3)
+                                    
+                                
+                                
+                                Text("Your studying this week:")
+                                    .foregroundColor(.white)
+                                
+                            }
+                            
+                            
                         )
 
                     Spacer()
 
                     Rectangle()
                         .frame(width: geometry.size.width * 0.45, height: geometry.size.height * 0.35)
-                        .foregroundColor(.black)
+                        .foregroundColor(.clear)
                         .cornerRadius(20)
                         .padding(.trailing, 20)
                         .padding(.bottom, 30)
                         .overlay(
-                            Text("Imagine a nice calendar here for streaks")
-                                .foregroundColor(.white)
+                            
+                            ZStack {
+                                
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.white, lineWidth: 3)
+                                
+                                
+                                Text("Imagine a nice calendar here for streaks")
+                                    .foregroundColor(.white)
+                                
+                            }
+                            
                         )
                 }
             )

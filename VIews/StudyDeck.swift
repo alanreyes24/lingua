@@ -26,18 +26,7 @@ struct StudyDeck: View {
         NavigationStack {
             
             GeometryReader { geometry in
-                
-                ZStack {
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
-                            Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
-                        ]),
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                    .edgesIgnoringSafeArea(.all)
-                    
+                                    
                     VStack {
                         DeckInfoBar(geometry: geometry, deck: deck)
                         CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer, currentCard: currentCard)
@@ -46,7 +35,6 @@ struct StudyDeck: View {
                             }
                         ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer, currentCard: $currentCard)
                     }
-                }
             }
         }
         .toolbar {
@@ -63,9 +51,6 @@ struct StudyDeck: View {
         }
     }
     
-    
-    
-    
     struct DeckInfoBar: View {
         
         let geometry: GeometryProxy
@@ -73,7 +58,7 @@ struct StudyDeck: View {
         
         var body: some View {
             Rectangle()
-                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
+                .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.15)
                 .foregroundColor(Color.red)
                 .overlay(
                     HStack {
@@ -96,7 +81,7 @@ struct StudyDeck: View {
         var body: some View {
             
             Rectangle()
-                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.50)
+                .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.60)
                 .foregroundColor(Color.blue)
                 .overlay (
                     
@@ -104,7 +89,7 @@ struct StudyDeck: View {
                     HStack {
                         
                         Rectangle()
-                            .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                            .frame(width: geometry.size.width * 0.30, height: geometry.size.height * 0.20)
                             .foregroundColor(Color.white)
                             .cornerRadius(20)
                             .padding(5)
@@ -113,13 +98,17 @@ struct StudyDeck: View {
                                 VStack{
                                     
                                     Text(currentCard.question)
+                                        .font(.system(size: 24, weight: .bold))
                                         .foregroundColor(Color.black)
                                     
                                     Text("\(currentCard.easeFactor)")
                                         .foregroundColor(Color.black)
+                                        .font(.system(size: 10, weight: .bold))
                                     
                                     Text("\(currentCard.interval)")
                                         .foregroundColor(Color.black)
+                                        .font(.system(size: 10, weight: .bold))
+
                                     
                                 }
                                 
@@ -129,12 +118,14 @@ struct StudyDeck: View {
                         if (showAnswer) {
                             
                             Rectangle()
-                                .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.15)
+                                .frame(width: geometry.size.width * 0.30, height: geometry.size.height * 0.20)
                                 .foregroundColor(Color.white)
                                 .cornerRadius(20)
                                 .padding(5)
                                 .overlay (
                                     Text(currentCard.answer)
+                                        .foregroundColor(Color.black)
+                                        .font(.system(size: 24, weight: .bold))
                                         .foregroundColor(Color.black)
                                 )
                             
@@ -157,19 +148,17 @@ struct StudyDeck: View {
     
     struct ConfidenceSelection: View {
         
-        let geometry: GeometryProxy
-        let deck: Deck
-        @Binding var showAnswer: Bool
-        @Binding var currentCard: Card
-        @EnvironmentObject var deckManager: DeckManager
-        @EnvironmentObject var cardManager: CardManager
+    let geometry: GeometryProxy
+    let deck: Deck
+    @Binding var showAnswer: Bool
+    @Binding var currentCard: Card
+    @EnvironmentObject var deckManager: DeckManager
+    @EnvironmentObject var cardManager: CardManager
         
-        
-        
-        var body: some View {
+    var body: some View {
             
             Rectangle()
-                .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
+                .frame(width: geometry.size.width * 0.999, height: geometry.size.height * 0.25)
                 .foregroundColor(Color.pink)
                 .overlay (
                     
@@ -177,54 +166,154 @@ struct StudyDeck: View {
                         
                         if (!showAnswer) {
                             
-                            Button("Reveal Answer") {
-                                showAnswer = true
-                            }
+                            Rectangle()
+                                .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                .foregroundColor(Color.white)
+                                .cornerRadius(20)
+                                .onTapGesture {
+                                    showAnswer = true
+                                }
+                                .overlay (
+                                    HStack {
+                                        
+                                        Image(systemName: "eye.fill")
+                                            .foregroundColor(Color.black)
+                                            .font(.system(size: 20))
+                                        
+                                        Text("Show Answer")
+                                            .font(.system(size: 20, weight: .bold))
+                                            .foregroundColor(Color.black)
+                                    }
+                                    
+                                )
                             
                         }
                         
-                        
                         if (showAnswer) {
+                            
                             HStack {
-                                Button("Again") {
-                                    showAnswer = false
-                                    cardManager.modifyEaseFactor(card: currentCard, score: 0)
-                                    //                                currentCard = deckManager.pickRandomCard(deck: deck)
-                                    currentCard = deckManager.pickLowestInterval(deck: deck)
-                                    
-                                    
-                                }
                                 
-                                Button("Hard") {
-                                    showAnswer = false
-                                    cardManager.modifyEaseFactor(card: currentCard, score: 1.0)
-                                    //                                currentCard = deckManager.pickRandomCard(deck: deck)
-                                    currentCard = deckManager.pickLowestInterval(deck: deck)
-                                    
-                                    
-                                    
-                                }
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(20)
+                                    .onTapGesture {
+                                        
+                                        showAnswer = false
+                                        cardManager.modifyEaseFactor(card: currentCard, score: 0)
+                                        // currentCard = deckManager.pickRandomCard(deck: deck)
+                                        currentCard = deckManager.pickLowestInterval(deck: deck)
+                                        
+                                    }
+                                    .overlay (
+                                        
+                                        HStack {
+                                            
+                                            Image(systemName: "arrow.triangle.2.circlepath")
+                                                .foregroundColor(Color.red)
+                                                .font(.system(size: 20))
+
+                                            Text("Again")
+                                                .font(.system(size: 20, weight: .bold))
+                                                .foregroundColor(Color.red)
+                                            
+                                        }
+                                        
+
+                                    )
                                 
-                                Button("Good") {
-                                    showAnswer = false
-                                    cardManager.modifyEaseFactor(card: currentCard, score: 2.0)
-                                    //                                currentCard = deckManager.pickRandomCard(deck: deck)
-                                    currentCard = deckManager.pickLowestInterval(deck: deck)
-                                    
-                                    
-                                    
-                                }
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(20)
+                                    .onTapGesture {
+                                        
+                                        showAnswer = false
+                                        cardManager.modifyEaseFactor(card: currentCard, score: 1.0)
+                                        // currentCard = deckManager.pickRandomCard(deck: deck)
+                                        currentCard = deckManager.pickLowestInterval(deck: deck)
+                                        
+                                    }
+                                    .overlay (
+                                        
+                                        HStack {
+                                            
+                                            Image(systemName: "hand.thumbsdown.fill")
+                                                .font(.system(size: 30))
+                                                .foregroundColor(Color.yellow)
+                                            
+                                            Text("Hard")
+                                                .font(.system(size: 20, weight: .bold))
+                                                .foregroundColor(Color.yellow)
+                                            
+                                        }
+                                        
+
+                                    )
                                 
-                                Button("Easy") {
-                                    showAnswer = false
-                                    cardManager.modifyEaseFactor(card: currentCard, score: 3.0)
-                                    //                                currentCard = deckManager.pickRandomCard(deck: deck)
-                                    currentCard = deckManager.pickLowestInterval(deck: deck)
-                                    
-                                    
-                                    
-                                }
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(20)
+                                    .onTapGesture {
+                                        
+                                        showAnswer = false
+                                        cardManager.modifyEaseFactor(card: currentCard, score: 2.0)
+                                        // currentCard = deckManager.pickRandomCard(deck: deck)
+                                        currentCard = deckManager.pickLowestInterval(deck: deck)
+                                        
+                                    }
+                                    .overlay (
+                                        
+                                        HStack {
+                                            
+                                            Image(systemName: "hand.thumbsup.fill")
+                                                .font(.system(size: 30))
+                                                .foregroundColor(Color.blue)
+                                            
+                                            Text("Good")
+                                                .font(.system(size: 20, weight: .bold))
+                                                .foregroundColor(Color.blue)
+                                            
+                                        }
+                                        
+                                        
+                                            
+
+                                    )
+                                
+                                Rectangle()
+                                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
+                                    .foregroundColor(Color.white)
+                                    .cornerRadius(20)
+                                    .onTapGesture {
+                                        
+                                        showAnswer = false
+                                        cardManager.modifyEaseFactor(card: currentCard, score: 3.0)
+                                        //currentCard = deckManager.pickRandomCard(deck: deck)
+                                        currentCard = deckManager.pickLowestInterval(deck: deck)
+                                        
+                                    }
+                                    .overlay (
+                                        
+                                        HStack {
+                                            
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 30))
+                                                .foregroundColor(Color.green)
+                                            
+                                            Text("Easy")
+                                                .font(.system(size: 20, weight: .bold))
+                                                .foregroundColor(Color.green)
+                                            
+                                        }
+                                        
+                                        
+                                    )
+                                
+                                
                             }
+                            
                         }
                         
                         
