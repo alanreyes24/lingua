@@ -110,7 +110,7 @@ struct MiddleView: View {
         
         Rectangle()
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
-            .foregroundColor(Color.orange)
+            .foregroundColor(Color.clear)
             .cornerRadius(20)
             .padding(.leading, 25)
             .overlay(
@@ -330,36 +330,110 @@ struct FillView: View {
         
         if currentInputMode == "manual" {
             
-            HStack {
-                Rectangle()
-                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .overlay(
-                        TextField("Enter your question...", text: $currentQuestion)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .foregroundColor(Color.black)
-                            .padding()
-                    )
+            VStack {
+                
+                HStack {
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.15)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .overlay(
+                            
+                            ZStack(alignment: .center) {
+                                
+                                if currentQuestion.isEmpty {
+                                    
+                                    Text("Enter your question...")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(Color.gray)
+                                
+                                }
+                                         
+                                         TextField("", text: $currentQuestion)
+                                             .foregroundColor(Color.black)
+                                             .multilineTextAlignment(.center)
+                                             .textFieldStyle(PlainTextFieldStyle()) // Removes default styling
+                                             .padding()
+                                
+                            }
+                            
+                        )
+                    
+                    Rectangle()
+                        .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.15)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .overlay(
+                            
+                            ZStack(alignment: .center) {
+                                
+                                if currentAnswer.isEmpty {
+                                    
+                                    Text("Enter your answer...")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(Color.gray)
+                                
+                                }
+                                         
+                                         TextField("", text: $currentAnswer)
+                                             .foregroundColor(Color.black)
+                                             .multilineTextAlignment(.center)
+                                             .textFieldStyle(PlainTextFieldStyle()) // Removes default styling
+                                             .padding()
+                                
+                            }
+                            
+                            
+                            
+                        )
+                    
+                    
+                } .padding(.top, 25)
                 
                 Rectangle()
-                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.10)
-                    .background(Color.white)
+                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.05)
+                    .foregroundColor(Color.white)
                     .cornerRadius(20)
-                    .overlay(
-                        TextField("Enter your answer...", text: $currentAnswer)
+                    .padding(25)
+                    .overlay (
+                        
+                        Text("Add Card")
                             .foregroundColor(Color.black)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding()
+                            .font(.system(size: 20, weight: .bold))
+                            
+                        
+                    )
+                    .onTapGesture {
+                        
+                        let manager = CardManager(modelContext: modelContext)
+                        manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
+                        currentQuestion = ""
+                        currentAnswer = ""
+                        
+                    }
+                
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.15, height: geometry.size.height * 0.05)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(20)
+                    .padding(25)
+                    .overlay (
+                        
+                        Text("Finish Deck")
+                            .foregroundColor(Color.black)
+                            .font(.system(size: 20, weight: .bold))
+                        
                     )
                 
-                Button("Add card") {
-                    let manager = CardManager(modelContext: modelContext)
-                    manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
-                    currentQuestion = ""
-                    currentAnswer = ""
-                }
+                    .onTapGesture {
+                        
+                        currentStep = "created"
+                        
+                    }
+
             }
+            
+            
         } else if currentInputMode == "gpt" {
             
             let gptManager = GPTManager(modelContext: modelContext)
@@ -446,10 +520,10 @@ struct FillView: View {
     }
     
     var body: some View {
-        Rectangle()
+        RoundedRectangle(cornerRadius: 20)
+            .stroke(Color.white, lineWidth: 3)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
-            .foregroundColor(Color.red)
-            .cornerRadius(20)
+            .foregroundColor(Color.clear)
             .padding(.leading, 25)
             .overlay(
                 
@@ -520,7 +594,7 @@ struct FillView: View {
                                         .onTapGesture {
                                             currentInputMode = "manual"
                                         }
-                                }
+                                } .padding(.leading, 22)
                                 
                             }
                             
@@ -538,7 +612,6 @@ struct FillView: View {
                 )
                 }
     }
-
 
 struct CreatedView: View {
     
