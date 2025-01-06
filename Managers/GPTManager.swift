@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import PDFKit
 
 class GPTManager: ObservableObject {
     
@@ -33,7 +34,12 @@ class GPTManager: ObservableObject {
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         let messages: [[String: String]] = [
-            ["role": "system", "content": "You are processing word translations from one language into another. Your task is to output the translations in a JSON format, structured as key-value pairs. The key should always be the non-English word, and the value should be the English translation(s). If the translation provided is clearly incorrect, replace it with the correct one. If there are multiple valid translations, include the two most commonly used ones, separated by a slash (e.g., ‘word1/word2’). Ensure the output follows these rules strictly, with English words ALWAYS appearing as the key."],
+            [
+                "role": "system",
+                "content": """
+                You are processing word translations from one language into another. You must provide your output strictly as valid JSON, with no additional text, formatting, or explanations. Each JSON key must be a non-English word, and its corresponding value must be the correct English translation(s). If a translation is obviously incorrect, replace it with the correct one. If there are multiple valid translations, include only the two most commonly used ones, separated by a slash (e.g., “word1/word2”). Do not include anything but the JSON object itself in your response. Make sure you do NOT SKIP over any words.
+                """
+            ],
             ["role": "user", "content": userInput]
         ]
 
@@ -74,6 +80,7 @@ class GPTManager: ObservableObject {
                     return
                 }
 
+                
                 // Decode valid response
                 if let choices = jsonResponse?["choices"] as? [[String: Any]],
                    let message = choices.first?["message"] as? [String: Any],
@@ -90,4 +97,39 @@ class GPTManager: ObservableObject {
         }
         task.resume()
     }
+    
+    func extractText (from pdfURL: URL) -> String? {
+        
+        guard let pdfDocument = PDFDocument(url: pdfURL) else {
+            print("Could not load pdf document")
+            return nil
+        }
+        
+        let pageCount = pdfDocument.pageCount
+        var pdfText = ""
+    
+        for pageIndex in 0..<pageCount {
+            guard let page = pdfDocument.page(at: pageIndex),
+                  let pageText = page.string else {
+                continue
+            }
+            pdfText += pageText + "\n"
+        }
+        
+        return pdfText
+        
+    }
+    
+    func sendPDFtoGPT(pdfURL: URL, completion: @escaping (String?) -> Void) {
+        
+        guard let pdfText = extractText(from: pdfURL) else {
+            completion(nil)
+            return
+        }
+
+        // 2. Pass the extracted text to our existing function
+        sendMessageToGPT(userInput: pdfText, completion: completion)
+    }
+
 }
+

@@ -15,6 +15,7 @@ struct LinguaApp: App {
             Deck.self,
             Card.self,
             Day.self
+            
 
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -31,6 +32,7 @@ struct LinguaApp: App {
     @StateObject private var cardManager: CardManager
     @StateObject private var gptManager: GPTManager
     @StateObject private var calendarManager: CalendarManager
+    @StateObject private var pdfManager: PDFManager
 
     init() {
         let container = sharedModelContainer
@@ -38,6 +40,7 @@ struct LinguaApp: App {
         _cardManager = StateObject(wrappedValue: CardManager(modelContext: container.mainContext))
         _gptManager = StateObject(wrappedValue: GPTManager(modelContext: container.mainContext))
         _calendarManager = StateObject(wrappedValue: CalendarManager(modelContext: container.mainContext))
+        _pdfManager = StateObject(wrappedValue: PDFManager(modelContext: container.mainContext))
     }
 
     var body: some Scene {
@@ -48,6 +51,7 @@ struct LinguaApp: App {
                 .environmentObject(cardManager)
                 .environmentObject(gptManager)
                 .environmentObject(calendarManager)
+                .environmentObject(pdfManager)
             
  
         }

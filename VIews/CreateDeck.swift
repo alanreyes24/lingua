@@ -324,7 +324,8 @@ struct FillView: View {
     
     @State private var gptInput: String = ""
     @State private var gptOutput: String? = nil
-    
+    @State private var showPDFPicker: Bool = true
+        
     @ViewBuilder
     private func inputModeView(geometry: GeometryProxy) -> some View {
         
@@ -499,6 +500,44 @@ struct FillView: View {
                     }
             }
             
+        } else if currentInputMode == "pdf" {
+            
+            // 1) Create an instance of PDFManager
+            let pdfManager = PDFManager(modelContext: modelContext)
+            
+            // 2) A button to show the NSOpenPanel (via pdfManager)
+            Button("Send PDF") {
+                showPDFPicker = true
+            }
+            // 3) Present PDF picker in a sheet
+            .sheet(isPresented: $showPDFPicker) {
+                pdfManager.openPDFPanel { pdfURL in
+                    // User picked a PDF
+                    showPDFPicker = false
+                    
+                    // 4) Create GPTManager and send the PDF
+                    let gptManager = GPTManager(modelContext: modelContext)
+                    gptManager.sendPDFtoGPT(pdfURL: pdfURL) { response in
+                        DispatchQueue.main.async {
+                            guard let jsonResponse = response else {
+                                print("No response or PDF extraction error.")
+                                return
+                            }
+                            // `jsonResponse` is the JSON-only output from your model
+                            print("Received JSON response: \(jsonResponse)")
+                            
+                            // 5) Build cards from the response
+                            let cardManager = CardManager(modelContext: modelContext)
+                            cardManager.buildCards(gptResponse: jsonResponse, toDeck: currentDeck)
+                            
+                            // 6) Update navigation or UI state
+                            currentStep = "created"
+                        }
+                    }
+                }
+            }
+        
+            
         } else if currentInputMode == "generating" {
             
                 VStack {
@@ -521,7 +560,7 @@ struct FillView: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .stroke(Color.white5, lineWidth: 3)
+            .stroke(Color.white, lineWidth: 3)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
             .foregroundColor(Color.clear)
             .padding(.leading, 25)
