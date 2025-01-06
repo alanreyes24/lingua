@@ -405,11 +405,14 @@ struct FillView: View {
                     )
                     .onTapGesture {
                         
-                        let manager = CardManager(modelContext: modelContext)
-                        manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
-                        currentQuestion = ""
-                        currentAnswer = ""
-                        
+                        if (currentQuestion != "" && currentAnswer != "") {
+                            
+                            let manager = CardManager(modelContext: modelContext)
+                            manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
+                            currentQuestion = ""
+                            currentAnswer = ""
+                            
+                        }
                     }
                 
                 Rectangle()

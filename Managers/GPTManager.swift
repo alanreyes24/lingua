@@ -38,7 +38,7 @@ class GPTManager: ObservableObject {
         ]
 
         let requestBody: [String: Any] = [
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4o-mini",
             "messages": messages
         ]
 
