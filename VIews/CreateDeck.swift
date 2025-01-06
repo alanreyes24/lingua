@@ -18,22 +18,11 @@ struct CreateDeck: View {
     var body: some View {
         NavigationStack {
         GeometryReader { geometry in
-//            ZStack {
-//                LinearGradient(
-//                    gradient: Gradient(colors: [
-//                        Color(red: 240 / 255, green: 214 / 255, blue: 162 / 255),
-//                        Color(red: 255 / 255, green: 248 / 255, blue: 220 / 255)
-//                    ]),
-//                    startPoint: .top,
-//                    endPoint: .bottom
-//                )
-//                .edgesIgnoringSafeArea(.all)
-//                
+             
                 VStack(spacing: 10) {
                     TopBarView(geometry: geometry, currentStep: currentStep)
                     MiddleView(geometry: geometry, currentInputMode: $currentInputMode, currentStep: $currentStep, currentDeck: $currentDeck)
                 }
-//            }
         }
     }
         .frame(minWidth: 1000, minHeight: 800)
@@ -61,45 +50,49 @@ struct TopBarView: View {
     let currentStep: String
     
     var body: some View {
-        Rectangle()
+        
+        RoundedRectangle(cornerRadius: 20)
+            .stroke(Color.white, lineWidth: 3)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.15)
-            .foregroundColor(Color.blue)
+            .foregroundColor(Color.clear)
             .cornerRadius(20)
-            .padding(5)
+            .padding(.leading, 25)
+            .padding(.top, 10)
             .overlay(
-                VStack {
-                    
-                    switch currentStep {
+                                                    
+                    VStack {
                         
-                    case "design":
-                        
-                        Text("Create your deck!")
-                            .font(.system(size: 36, weight: .bold))
-                        Text("Design the look of your deck")
-                            .font(.system(size: 24, weight: .bold))
-                        
-                        
-                        
-                    case "fill":
-                        
-                        Text("Select a mode to input your material!")
-                            .font(.system(size: 36, weight: .bold))
-                        
-                    case "created":
-                        
-                        Text("Your deck has been created!")
-                            .font(.system(size: 36, weight: .bold))
+                        switch currentStep {
+                            
+                        case "design":
+                                                    
+                            Text("Design the look of your deck!")
+                                .font(.system(size: 36, weight: .bold))
+                                                
+                        case "fill":
+                            
+                            Text("Select a mode to input your material!")
+                                .font(.system(size: 36, weight: .bold))
+                            
+                        case "created":
+                            
+                            Text("Your deck has been created!")
+                                .font(.system(size: 36, weight: .bold))
 
-                    default:
+                        default:
+                            
+                            Text("Error step")
+                                .font(.system(size: 36, weight: .bold))
+                            
+                        }
                         
-                        Text("Error step")
-                            .font(.system(size: 36, weight: .bold))
                         
+                       
                     }
                     
-                    
-                   
-                }
+                
+                
+                
             )
     }
 }
@@ -117,9 +110,9 @@ struct MiddleView: View {
         
         Rectangle()
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
-            .foregroundColor(Color.clear)
+            .foregroundColor(Color.orange)
             .cornerRadius(20)
-            .padding(5)
+            .padding(.leading, 25)
             .overlay(
                 
                 VStack {
@@ -440,7 +433,7 @@ struct FillView: View {
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
             .foregroundColor(Color.red)
             .cornerRadius(20)
-            .padding(5)
+            .padding(.leading, 25)
             .overlay(
                 VStack {
                     
@@ -451,9 +444,22 @@ struct FillView: View {
                             .foregroundColor(Color.white)
                             .cornerRadius(20)
                             .overlay (
-                                Text("AI")
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(Color.black)
+                                
+                                VStack {
+                                    
+                                    Text("AI")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(Color.black)
+                                        .padding(3)
+
+                                    
+                                    
+                                    Image(systemName: "display")
+                                        .foregroundColor(Color.black)
+                                        .font(.system(size: 25))
+                                }
+                                
+                               
                             )
                             .onTapGesture {
                                 currentInputMode = "gpt"
@@ -464,12 +470,28 @@ struct FillView: View {
                             .foregroundColor(Color.white)
                             .cornerRadius(20)
                             .overlay (
-                                Text("Manual")
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(Color.black)
+                                
+                                VStack {
+                                    
+                                    Text("PDF")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(Color.black)
+                                        .padding(3)
+
+                                    
+                                    Image(systemName: "document.badge.plus.fill")
+                                        .foregroundColor(Color.black)
+                                        .font(.system(size: 25))
+
+                                    
+                                    
+                                }
+                                
+                               
+                                
                             )
                             .onTapGesture {
-                                currentInputMode = "manual"
+                                currentInputMode = "pdf"
                             }
                         
                         Rectangle()
@@ -477,13 +499,27 @@ struct FillView: View {
                             .foregroundColor(Color.white)
                             .cornerRadius(20)
                             .overlay (
-                                Text("PDF")
-                                    .font(.system(size: 14, weight: .bold))
-                                    .foregroundColor(Color.black)
+                                
+                                VStack {
+                                    
+                                    Text("Manual")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .foregroundColor(Color.black)
+                                        .padding(3)
+                                    
+                                    Image(systemName: "pencil.and.scribble")
+                                        .foregroundColor(Color.black)
+                                        .font(.system(size: 25))
+
+                                }
+                                
+                                
                             )
                             .onTapGesture {
-                                currentInputMode = "pdf"
+                                currentInputMode = "manual"
                             }
+                        
+                        
                         
                     }
                     

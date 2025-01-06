@@ -52,7 +52,7 @@ class CalendarManager: ObservableObject {
     
     /// Generates an array of new Day objects (one for each day) for the given date's month.
     /// No SwiftData calls are here; it's just an in-memory builder.
-    /// 
+    ///
     private func retrieveCurrentMonthDetails(for date: Date) throws -> [Day] {
         var monthArray: [Day] = []
         

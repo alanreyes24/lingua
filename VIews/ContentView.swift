@@ -64,7 +64,7 @@ struct WelcomeView: View {
 
     var body: some View {
         Rectangle()
-            .foregroundColor(.orange)
+            .foregroundColor(.clear)
             .frame(width: geometry.size.width * 0.97, height: geometry.size.height * 0.10)
             .cornerRadius(20)
             .padding(5)
@@ -83,7 +83,7 @@ struct FlashcardsView: View {
 
     var body: some View {
         Rectangle()
-            .foregroundColor(.red)
+            .foregroundColor(.clear)
             .frame(width: geometry.size.width * 0.97, height: geometry.size.height * 0.40)
             .cornerRadius(20)
             .padding(5)
