@@ -328,11 +328,7 @@ struct FillView: View {
     @ViewBuilder
     private func inputModeView(geometry: GeometryProxy) -> some View {
         
-        if currentInputMode == "text" {
-            
-            Text("TEXT MODE")
-            
-        } else if currentInputMode == "manual" {
+        if currentInputMode == "manual" {
             
             HStack {
                 Rectangle()
@@ -373,59 +369,80 @@ struct FillView: View {
                     
                 ZStack {
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.white) // Rounded background
+                        .foregroundColor(Color.white)
+                        .padding(20)
                     TextEditor(text: $gptInput)
-                        .padding(12) // Add padding to prevent text from touching edges
+                        .padding(30)
                         .scrollContentBackground(.hidden) // Hide default background
                         .foregroundColor(Color.black)
                 }
                 .frame(width: geometry.size.width * 0.60, height: geometry.size.height * 0.30)
             
                 
-                Button("Convert text into cards") {
-                    
-                    gptButtonPressed = true
-                    
-                    gptManager.sendMessageToGPT(userInput: gptInput) { response in
+                Rectangle()
+                    .frame(width: geometry.size.width * 0.20, height: geometry.size.height * 0.05)
+                    .foregroundColor(Color.white)
+                    .cornerRadius(20)
+                    .overlay (
                         
+                        Text("Generate Cards")
+                            .foregroundColor(Color.black)
+                            .font(.system(size: 20, weight: .bold))
+                    )
+                    .onTapGesture {
                         
-                        if let response = response {
-                            gptOutput = response
+                        gptButtonPressed = true
+                        currentInputMode = "generating"
+                        
+                        gptManager.sendMessageToGPT(userInput: gptInput) { response in
                             
-                            gptButtonPressed = false
-                            gptRequestFinished = true
-                            currentStep = "created"
+                            
+                            if let response = response {
+                                gptOutput = response
+                                
+                                gptButtonPressed = false
+                                gptRequestFinished = true
+                                currentStep = "created"
 
-                            if let jsonCards = gptOutput {
+                                if let jsonCards = gptOutput {
+                                    
+                                    let cardManager = CardManager(modelContext: modelContext)
+                                    cardManager.buildCards(gptResponse: jsonCards, toDeck: currentDeck)
+                                    
+                                    
+                                }
                                 
-                                let cardManager = CardManager(modelContext: modelContext)
-                                cardManager.buildCards(gptResponse: jsonCards, toDeck: currentDeck)
-                                
-                                
+                            } else {
+                                print("Failed to get a response.")
                             }
                             
-                        } else {
-                            print("Failed to get a response.")
+    
+                            
+                            
+                            
                         }
+                        
                     }
-                }
-                
-                if (gptButtonPressed) {
-                    
-                    Text("Your cards are currently being created...")
-                    
-                }
-                
-                if (gptRequestFinished) {
-                    
-                    Text("Your cards have finished being created!")
-                    
-
-                }
-                
-                
             }
+            
+        } else if currentInputMode == "generating" {
+            
+                VStack {
+                    
+                    Text("Generating your cards...")
+                        .font(.system(size: 40, weight: .bold))
+                        .foregroundColor(Color.white)
+                        .padding(50)
+                    
+                    Image(systemName: "circle.dotted")
+                        .font(.system(size: 80))
+                        .foregroundColor(Color.white)
+                        .symbolEffect(.rotate)
+                    
+                }
+            
         }
+                    
     }
     
     var body: some View {
@@ -435,100 +452,93 @@ struct FillView: View {
             .cornerRadius(20)
             .padding(.leading, 25)
             .overlay(
+                
                 VStack {
                     
-                    HStack {
+                    Group {
                         
-                        Rectangle()
-                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
-                            .foregroundColor(Color.white)
-                            .cornerRadius(20)
-                            .overlay (
-                                
-                                VStack {
+                        if currentInputMode != "generating" {
+                            
+                            VStack {
+                                HStack {
+                                    Rectangle()
+                                        .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(20)
+                                        .overlay(
+                                            VStack {
+                                                Text("AI")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(.black)
+                                                    .padding(3)
+                                                
+                                                Image(systemName: "display")
+                                                    .foregroundColor(.black)
+                                                    .font(.system(size: 25))
+                                            }
+                                        )
+                                        .onTapGesture {
+                                            currentInputMode = "gpt"
+                                        }
                                     
-                                    Text("AI")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(Color.black)
-                                        .padding(3)
-
+                                    Rectangle()
+                                        .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(20)
+                                        .overlay(
+                                            VStack {
+                                                Text("PDF")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(.black)
+                                                    .padding(3)
+                                                
+                                                Image(systemName: "document.badge.plus.fill")
+                                                    .foregroundColor(.black)
+                                                    .font(.system(size: 25))
+                                            }
+                                        )
+                                        .onTapGesture {
+                                            currentInputMode = "pdf"
+                                        }
                                     
-                                    
-                                    Image(systemName: "display")
-                                        .foregroundColor(Color.black)
-                                        .font(.system(size: 25))
+                                    Rectangle()
+                                        .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(20)
+                                        .overlay(
+                                            VStack {
+                                                Text("Manual")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(.black)
+                                                    .padding(3)
+                                                
+                                                Image(systemName: "pencil.and.scribble")
+                                                    .foregroundColor(.black)
+                                                    .font(.system(size: 25))
+                                            }
+                                        )
+                                        .onTapGesture {
+                                            currentInputMode = "manual"
+                                        }
                                 }
                                 
-                               
-                            )
-                            .onTapGesture {
-                                currentInputMode = "gpt"
                             }
-                        
-                        Rectangle()
-                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
-                            .foregroundColor(Color.white)
-                            .cornerRadius(20)
-                            .overlay (
-                                
-                                VStack {
-                                    
-                                    Text("PDF")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(Color.black)
-                                        .padding(3)
+                            
+                        }
+                                                
+                        inputModeView(geometry: geometry)
 
-                                    
-                                    Image(systemName: "document.badge.plus.fill")
-                                        .foregroundColor(Color.black)
-                                        .font(.system(size: 25))
-
-                                    
-                                    
-                                }
-                                
-                               
-                                
-                            )
-                            .onTapGesture {
-                                currentInputMode = "pdf"
-                            }
-                        
-                        Rectangle()
-                            .frame(width: geometry.size.width * 0.3, height: geometry.size.height * 0.2)
-                            .foregroundColor(Color.white)
-                            .cornerRadius(20)
-                            .overlay (
-                                
-                                VStack {
-                                    
-                                    Text("Manual")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(Color.black)
-                                        .padding(3)
-                                    
-                                    Image(systemName: "pencil.and.scribble")
-                                        .foregroundColor(Color.black)
-                                        .font(.system(size: 25))
-
-                                }
-                                
-                                
-                            )
-                            .onTapGesture {
-                                currentInputMode = "manual"
-                            }
-                        
-                        
-                        
-                    }
+                        }
                     
-                    inputModeView(geometry: geometry)
-
                 }
-            )
+                             
+                
+                
+
+                )
+                }
     }
-}
+
 
 struct CreatedView: View {
     
