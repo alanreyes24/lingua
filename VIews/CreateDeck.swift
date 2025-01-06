@@ -405,14 +405,11 @@ struct FillView: View {
                     )
                     .onTapGesture {
                         
-                        if (currentQuestion != "" && currentAnswer != "") {
-                            
-                            let manager = CardManager(modelContext: modelContext)
-                            manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
-                            currentQuestion = ""
-                            currentAnswer = ""
-                            
-                        }
+                        let manager = CardManager(modelContext: modelContext)
+                        manager.addCard(question: currentQuestion, answer: currentAnswer, toDeck: currentDeck)
+                        currentQuestion = ""
+                        currentAnswer = ""
+                        
                     }
                 
                 Rectangle()
@@ -524,7 +521,7 @@ struct FillView: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .stroke(Color.white, lineWidth: 3)
+            .stroke(Color.white5, lineWidth: 3)
             .frame(width: geometry.size.width * 0.95, height: geometry.size.height * 0.80)
             .foregroundColor(Color.clear)
             .padding(.leading, 25)
