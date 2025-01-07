@@ -14,19 +14,19 @@ struct StudyDeck: View {
     
     @Environment(\.modelContext) private var modelContext
     @Environment(\.presentationMode) private var presentationMode
-    
     @EnvironmentObject var deckManager: DeckManager
 
     @State var deck: Deck
     @State var showAnswer: Bool = false
     @State var currentCard: Card = Card(question: "Error", answer: "question", deck: Deck(name: "Error Deck"))
+    @State private var shouldNavigateToHome = false
 
     var body: some View {
-        
         NavigationStack {
-            
-            GeometryReader { geometry in
-                                    
+            if shouldNavigateToHome {
+                ContentView() // Automatically redirects to ContentView
+            } else {
+                GeometryReader { geometry in
                     VStack {
                         DeckInfoBar(geometry: geometry, deck: deck)
                         CardStudy(geometry: geometry, deck: deck, showAnswer: showAnswer, currentCard: currentCard)
@@ -35,21 +35,24 @@ struct StudyDeck: View {
                             }
                         ConfidenceSelection(geometry: geometry, deck: deck, showAnswer: $showAnswer, currentCard: $currentCard)
                     }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }){
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Back")
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: {
+                            // Set the flag to navigate back to home
+                            shouldNavigateToHome = true
+                        }) {
+                            HStack {
+                                Image(systemName: "chevron.backward")
+                                Text("Home")
+                            }
+                        }
                     }
                 }
             }
         }
     }
+}
     
     struct DeckInfoBar: View {
         
@@ -324,5 +327,4 @@ struct StudyDeck: View {
             
         }
     }
-    
-}
+
